@@ -1,21 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
-
-// Helper function to read the db.json file
-function readDbFile() {
-  const filePath = path.join(process.cwd(), 'db.json');
-  const fileContents = fs.readFileSync(filePath, 'utf8');
-  return JSON.parse(fileContents);
-}
+import { getDbData, ensureDbExists } from '@/lib/db-seed';
 
 // GET handler for the root API endpoint
 export async function GET(request: NextRequest) {
   try {
-    const data = readDbFile();
+    // Ensure the database exists before trying to read it
+    ensureDbExists();
+    
+    // Get the database data
+    const data = getDbData();
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error reading db.json:', error);
+    console.error('Error reading database:', error);
     return NextResponse.json(
       { error: 'Failed to read database' },
       { status: 500 }

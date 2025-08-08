@@ -1,18 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
-
-// Helper function to read the db.json file
-function readDbFile() {
-  const filePath = path.join(process.cwd(), 'db.json');
-  const fileContents = fs.readFileSync(filePath, 'utf8');
-  return JSON.parse(fileContents);
-}
+import { getDbData, ensureDbExists } from '@/lib/db-seed';
 
 // GET handler for patients
 export async function GET(request: NextRequest) {
   try {
-    const data = readDbFile();
+    // Ensure the database exists before trying to read it
+    ensureDbExists();
+    
+    // Get the database data
+    const data = getDbData();
     return NextResponse.json(data.patients);
   } catch (error) {
     console.error('Error reading patients data:', error);
@@ -26,7 +22,11 @@ export async function GET(request: NextRequest) {
 // POST handler for patients
 export async function POST(request: NextRequest) {
   try {
-    const data = readDbFile();
+    // Ensure the database exists before trying to modify it
+    ensureDbExists();
+    
+    // Get the current database data
+    const data = getDbData();
     const newPatient = await request.json();
     
     // Add ID if not provided
@@ -34,11 +34,12 @@ export async function POST(request: NextRequest) {
       newPatient.id = Date.now().toString();
     }
     
+    // Add the new patient to the data
     data.patients.push(newPatient);
     
-    // Write back to db.json
-    const filePath = path.join(process.cwd(), 'db.json');
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    // Write the updated data back to the database
+    const { writeDbData } = await import('@/lib/db-seed');
+    writeDbData(data);
     
     return NextResponse.json(newPatient, { status: 201 });
   } catch (error) {

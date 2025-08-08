@@ -41,13 +41,47 @@ export interface Appointment {
   specialty: string
 }
 
-// Check if JSON Server is running
-const checkServerStatus = async () => {
+// Fetch with retry mechanism
+const fetchWithRetry = async (url: string, options = {}, retries = 3, delay = 1000) => {
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+      
+      const response = await fetch(url, { 
+        ...options,
+        signal: controller.signal,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+          ...options.headers
+        }
+      });
+      
+      clearTimeout(timeoutId);
+      return response;
+      
+    } catch (error) {
+      // If not the last attempt, wait before retrying
+      if (attempt < retries - 1) {
+        await new Promise(resolve => setTimeout(resolve, delay));
+      } else {
+        throw error; // Throw on final attempt
+      }
+    }
+  }
+  
+  throw new Error("Failed after maximum retries");
+}
+
+// Check if server is running with retry mechanism
+const checkServerStatus = async (retries = 3, delay = 1000) => {
   try {
-    const response = await fetch(`${BASE_URL}/doctors`, { method: "HEAD" })
-    return response.ok
+    const response = await fetchWithRetry(`${BASE_URL}/doctors`, { method: "HEAD" }, retries, delay);
+    return response.ok;
   } catch (error) {
-    return false
+    return false;
   }
 }
 
@@ -56,7 +90,7 @@ export const authAPI = {
   async login(email: string, password: string, role: "doctor" | "patient") {
     try {
       const endpoint = role === "doctor" ? "doctors" : "patients"
-      const response = await fetch(`${BASE_URL}/${endpoint}`)
+      const response = await fetchWithRetry(`${BASE_URL}/${endpoint}`)
       if (!response.ok) {
         throw new Error("Server not responding. Please check your internet connection or try again later.")
       }
@@ -78,7 +112,7 @@ export const authAPI = {
     try {
       const endpoint = role === "doctor" ? "doctors" : "patients"
       // Check if user already exists
-      const existingResponse = await fetch(`${BASE_URL}/${endpoint}`)
+      const existingResponse = await fetchWithRetry(`${BASE_URL}/${endpoint}`)
       if (existingResponse.ok) {
         const existingUsers = await existingResponse.json()
         const userExists = existingUsers.find((u: any) => u.email === userData.email)
@@ -86,7 +120,7 @@ export const authAPI = {
           throw new Error("User with this email already exists")
         }
       }
-      const response = await fetch(`${BASE_URL}/${endpoint}`, {
+      const response = await fetchWithRetry(`${BASE_URL}/${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,7 +149,7 @@ export const authAPI = {
 export const doctorsAPI = {
   async getAll(): Promise<Doctor[]> {
     try {
-      const response = await fetch(`${BASE_URL}/doctors`)
+      const response = await fetchWithRetry(`${BASE_URL}/doctors`)
       if (!response.ok) {
         throw new Error("Failed to fetch doctors")
       }
@@ -129,7 +163,7 @@ export const doctorsAPI = {
   },
   async getById(id: string): Promise<Doctor> {
     try {
-      const response = await fetch(`${BASE_URL}/doctors/${id}`)
+      const response = await fetchWithRetry(`${BASE_URL}/doctors/${id}`)
       if (!response.ok) {
         throw new Error("Failed to fetch doctor")
       }
@@ -143,7 +177,7 @@ export const doctorsAPI = {
   },
   async update(id: string, data: Partial<Doctor>): Promise<Doctor> {
     try {
-      const response = await fetch(`${BASE_URL}/doctors/${id}`, {
+      const response = await fetchWithRetry(`${BASE_URL}/doctors/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -167,7 +201,7 @@ export const doctorsAPI = {
 export const patientsAPI = {
   async getById(id: string): Promise<Patient> {
     try {
-      const response = await fetch(`${BASE_URL}/patients/${id}`)
+      const response = await fetchWithRetry(`${BASE_URL}/patients/${id}`)
       if (!response.ok) {
         throw new Error("Failed to fetch patient details")
       }
@@ -183,7 +217,7 @@ export const patientsAPI = {
 export const appointmentsAPI = {
   async create(appointment: Omit<Appointment, "id">): Promise<Appointment> {
     try {
-      const response = await fetch(`${BASE_URL}/appointments`, {
+      const response = await fetchWithRetry(`${BASE_URL}/appointments`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -204,7 +238,7 @@ export const appointmentsAPI = {
   async getByDoctorId(doctorId: string): Promise<Appointment[]> {
     console.log(`Fetching appointments from: ${BASE_URL}/appointments?doctorId=${doctorId}`)
     try {
-      const response = await fetch(`${BASE_URL}/appointments?doctorId=${doctorId}`)
+      const response = await fetchWithRetry(`${BASE_URL}/appointments?doctorId=${doctorId}`)
       if (!response.ok) {
         throw new Error("Failed to fetch appointments")
       }
@@ -218,7 +252,7 @@ export const appointmentsAPI = {
   },
   async getByPatientId(patientId: string): Promise<Appointment[]> {
     try {
-      const response = await fetch(`${BASE_URL}/appointments?patientId=${patientId}`)
+      const response = await fetchWithRetry(`${BASE_URL}/appointments?patientId=${patientId}`)
       if (!response.ok) {
         throw new Error("Failed to fetch appointments")
       }
@@ -234,7 +268,7 @@ export const appointmentsAPI = {
     console.log(`Attempting to PATCH ${BASE_URL}/appointments/${id} with new date/time and status 'pending'...`)
     console.log("New Date:", newDate, "New Time:", newTime)
     try {
-      const response = await fetch(`${BASE_URL}/appointments/${id}`, {
+      const response = await fetchWithRetry(`${BASE_URL}/appointments/${id}`, {
         method: "PATCH", // Use PATCH to update specific fields
         headers: {
           "Content-Type": "application/json",
@@ -255,7 +289,7 @@ export const appointmentsAPI = {
   },
   async updateStatus(id: string, status: Appointment["status"]): Promise<Appointment> {
     try {
-      const response = await fetch(`${BASE_URL}/appointments/${id}`, {
+      const response = await fetchWithRetry(`${BASE_URL}/appointments/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -275,7 +309,7 @@ export const appointmentsAPI = {
   },
   async getById(id: string): Promise<Appointment> {
     try {
-      const response = await fetch(`${BASE_URL}/appointments/${id}`)
+      const response = await fetchWithRetry(`${BASE_URL}/appointments/${id}`)
       if (!response.ok) {
         throw new Error("Failed to fetch appointment")
       }

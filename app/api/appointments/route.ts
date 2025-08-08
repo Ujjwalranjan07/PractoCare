@@ -1,18 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
-
-// Helper function to read the db.json file
-function readDbFile() {
-  const filePath = path.join(process.cwd(), 'db.json');
-  const fileContents = fs.readFileSync(filePath, 'utf8');
-  return JSON.parse(fileContents);
-}
+import { getDbData, ensureDbExists } from '@/lib/db-seed';
 
 // GET handler for appointments
 export async function GET(request: NextRequest) {
   try {
-    const data = readDbFile();
+    // Ensure the database exists before trying to read it
+    ensureDbExists();
+    
+    // Get the database data
+    const data = getDbData();
     return NextResponse.json(data.appointments);
   } catch (error) {
     console.error('Error reading appointments data:', error);
@@ -26,7 +22,11 @@ export async function GET(request: NextRequest) {
 // POST handler for appointments
 export async function POST(request: NextRequest) {
   try {
-    const data = readDbFile();
+    // Ensure the database exists before trying to modify it
+    ensureDbExists();
+    
+    // Get the current database data
+    const data = getDbData();
     const newAppointment = await request.json();
     
     // Add ID if not provided
@@ -34,11 +34,12 @@ export async function POST(request: NextRequest) {
       newAppointment.id = Date.now().toString();
     }
     
+    // Add the new appointment to the data
     data.appointments.push(newAppointment);
     
-    // Write back to db.json
-    const filePath = path.join(process.cwd(), 'db.json');
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    // Write the updated data back to the database
+    const { writeDbData } = await import('@/lib/db-seed');
+    writeDbData(data);
     
     return NextResponse.json(newAppointment, { status: 201 });
   } catch (error) {

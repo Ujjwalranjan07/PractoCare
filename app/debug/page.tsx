@@ -9,7 +9,13 @@ export default function DebugPage() {
   const [serverStatus, setServerStatus] = useState<"checking" | "connected" | "disconnected">("checking")
   const [doctors, setDoctors] = useState<any[]>([])
   const [patients, setPatients] = useState<any[]>([])
-  const [error, setError] = useState<string>("")
+  const [error, setError] = useState<string>("") 
+  const [dbInfo, setDbInfo] = useState<{
+    exists: boolean;
+    doctorsCount: number;
+    patientsCount: number;
+    appointmentsCount: number;
+  } | null>(null)
 
   const checkConnection = async () => {
     setServerStatus("checking")
@@ -23,9 +29,45 @@ export default function DebugPage() {
         throw new Error("Connection timeout. Server is not responding.");
       }, 5000);
       
+      // Use the debug endpoint for comprehensive diagnostics
+      const debugResponse = await fetch("/api/debug", {
+        signal: controller.signal,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      })
+      
+      if (!debugResponse.ok) {
+        clearTimeout(timeoutId);
+        throw new Error(`Debug endpoint failed: ${debugResponse.status}`)
+      }
+      
+      const debugData = await debugResponse.json()
+      
+      if (debugData.status !== 'ok') {
+        throw new Error(debugData.message || 'Server reported an error')
+      }
+      
+      // Set database info from debug response
+      if (debugData.database) {
+        setDbInfo({
+          exists: true,
+          doctorsCount: debugData.database.doctorsCount || 0,
+          patientsCount: debugData.database.patientsCount || 0,
+          appointmentsCount: debugData.database.appointmentsCount || 0
+        })
+      }
+      
       // Test doctors endpoint
       const doctorsResponse = await fetch("/api/doctors", {
-        signal: controller.signal
+        signal: controller.signal,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
       })
       if (!doctorsResponse.ok) {
         clearTimeout(timeoutId);
@@ -36,7 +78,12 @@ export default function DebugPage() {
 
       // Test patients endpoint
       const patientsResponse = await fetch("/api/patients", {
-        signal: controller.signal
+        signal: controller.signal,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
       })
       if (!patientsResponse.ok) {
         clearTimeout(timeoutId);
@@ -50,6 +97,8 @@ export default function DebugPage() {
     } catch (err) {
       setServerStatus("disconnected")
       setError(err instanceof Error ? err.message : "Unknown error")
+      // Reset database info on error
+      setDbInfo(null)
     }
   }
 
@@ -86,6 +135,27 @@ export default function DebugPage() {
                 Status: {serverStatus.toUpperCase()}
               </p>
 
+              {/* Database Status */}
+              {dbInfo && serverStatus === "connected" && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <p className="text-blue-800 font-medium mb-2">Database Status:</p>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="bg-white p-3 rounded shadow-sm">
+                      <p className="text-sm text-gray-500">Doctors</p>
+                      <p className="text-xl font-bold">{dbInfo.doctorsCount}</p>
+                    </div>
+                    <div className="bg-white p-3 rounded shadow-sm">
+                      <p className="text-sm text-gray-500">Patients</p>
+                      <p className="text-xl font-bold">{dbInfo.patientsCount}</p>
+                    </div>
+                    <div className="bg-white p-3 rounded shadow-sm">
+                      <p className="text-sm text-gray-500">Appointments</p>
+                      <p className="text-xl font-bold">{dbInfo.appointmentsCount}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {error && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                   <p className="text-red-800 font-medium">Error:</p>
@@ -100,11 +170,13 @@ export default function DebugPage() {
               {serverStatus === "disconnected" && (
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                   <p className="text-yellow-800 font-medium">Troubleshooting steps:</p>
-                  <ol className="text-yellow-700 mt-2 space-y-1 list-decimal list-inside">
-                    <li>Check your internet connection</li>
-                    <li>The API server might be temporarily down</li>
-                    <li>Try again in a few minutes</li>
-                    <li>If the problem persists, contact support</li>
+                  <ol className="text-yellow-700 mt-2 space-y-2 list-decimal list-inside">
+                    <li><strong>Check your internet connection</strong> - Ensure you have a stable connection to the internet.</li>
+                    <li><strong>Clear browser cache</strong> - Try clearing your browser cache and cookies, then refresh the page.</li>
+                    <li><strong>Try a different browser</strong> - If the issue persists, try accessing the application from a different browser.</li>
+                    <li><strong>Check server status</strong> - The API server might be temporarily down. Wait a few minutes and try again.</li>
+                    <li><strong>Verify login credentials</strong> - If you're having trouble logging in, make sure you're using the correct email and password.</li>
+                    <li><strong>Contact support</strong> - If none of the above steps work, please contact our support team.</li>
                   </ol>
                 </div>
               )}
