@@ -9,6 +9,16 @@ const nextConfig = {
   images: {
     domains: ['i.postimg.cc'],
   },
+  output: 'standalone',
+  trailingSlash: true,
+  async rewrites() {
+    return [
+      {
+        source: '/(.*)',
+        destination: '/',
+      },
+    ];
+  },
 }
 
 export default nextConfig
