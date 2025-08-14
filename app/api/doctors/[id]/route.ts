@@ -13,7 +13,10 @@ function readDbFile() {
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const data = readDbFile();
-    const doctor = data.doctors.find((doc: any) => doc.id === params.id);
+    // In Next.js App Router, params are already available and don't need to be awaited
+    // The error is likely due to a type mismatch, so we'll convert to string explicitly
+    const doctorId = String(params.id);
+    const doctor = data.doctors.find((doc: any) => String(doc.id) === doctorId);
     
     if (!doctor) {
       return NextResponse.json(

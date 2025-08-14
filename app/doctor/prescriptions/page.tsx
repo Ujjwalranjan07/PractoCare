@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 import { ProtectedRoute } from "@/components/ProtectedRoute"
-import { Navbar } from "@/components/Navbar"
+import { ModernNavbar } from "@/components/ModernNavbar"
 import { Button } from "@/components/ui/button"
+import "../../styles/hover-fix.css"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
@@ -305,7 +306,7 @@ export default function PrescriptionsPage() {
   return (
     <ProtectedRoute allowedRoles={["doctor"]}>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-        <Navbar />
+        <ModernNavbar />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">

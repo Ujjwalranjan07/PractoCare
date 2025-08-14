@@ -59,13 +59,31 @@ const PrescriptionTemplate: React.FC<PrescriptionTemplateProps> = ({
       })
 
       const prescriptionElement = prescriptionRef.current
+      
+      // Enhanced html2canvas configuration for better compatibility
       const canvas = await html2canvas(prescriptionElement, {
-        scale: 2,
-        logging: false,
+        scale: 2, // Higher scale for better quality
         backgroundColor: "#ffffff", // White background
+        useCORS: true, // Enable CORS for images
+        allowTaint: true, // Allow tainted canvas
+        scrollX: 0,
+        scrollY: 0,
+        logging: false, // Disable logging for production
+        imageTimeout: 0, // No timeout for images
+        onclone: (clonedDoc) => {
+          // Ensure all images are loaded in the cloned document
+          const images = clonedDoc.getElementsByTagName('img');
+          for (let i = 0; i < images.length; i++) {
+            images[i].crossOrigin = 'anonymous';
+          }
+          return clonedDoc;
+        }
       })
 
-      const imgData = canvas.toDataURL('image/png')
+      // Use a more reliable image format with better quality
+      const imgData = canvas.toDataURL('image/jpeg', 1.0)
+      
+      // Create PDF with proper configuration
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
@@ -75,8 +93,12 @@ const PrescriptionTemplate: React.FC<PrescriptionTemplateProps> = ({
       const imgWidth = 210 // A4 width in mm
       const imgHeight = (canvas.height * imgWidth) / canvas.width
 
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight)
-      pdf.save(`Prescription_${prescription.id.toString()}.pdf`)
+      // Add the image to the PDF
+      pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight)
+      
+      // Force download with a unique filename
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      pdf.save(`Prescription_${prescription.id.toString()}_${timestamp}.pdf`)
 
       toast({
         title: "Success",
@@ -103,6 +125,7 @@ const PrescriptionTemplate: React.FC<PrescriptionTemplateProps> = ({
         ref={prescriptionRef} 
         className="bg-white p-4 sm:p-6 md:p-8 rounded-lg border border-gray-200 shadow-sm relative overflow-hidden"
         style={{ minHeight: "297mm", width: "100%", maxWidth: "210mm" }}
+        onLoad={() => console.log("Prescription template fully loaded")}
       >
         {/* Watermark */}
         <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
@@ -125,7 +148,7 @@ const PrescriptionTemplate: React.FC<PrescriptionTemplateProps> = ({
           </div>
           
           <div className="text-center md:text-right">
-            <h2 className="text-lg sm:text-xl font-bold text-gray-800">Dr. {prescription.doctorName}</h2>
+            <h2 className="text-lg sm:text-xl font-bold text-gray-800">{prescription.doctorName.startsWith('Dr.') ? prescription.doctorName : `Dr. ${prescription.doctorName}`}</h2>
             <p className="text-sm sm:text-base text-gray-600">{doctorQualifications}</p>
             <p className="text-sm sm:text-base text-gray-600">Reg. No: {doctorRegistrationNumber}</p>
             <p className="text-sm sm:text-base text-gray-600">{doctorDepartment}</p>
@@ -243,17 +266,20 @@ const PrescriptionTemplate: React.FC<PrescriptionTemplateProps> = ({
         </div>
       </div>
 
-      {/* Download Button */}
-      <div className="flex justify-center px-4 sm:px-0">
-        <Button 
-          onClick={handleDownloadPrescription}
-          className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 sm:px-8 py-2 sm:py-3 rounded-full shadow-md transition-all duration-300 hover:shadow-lg flex items-center justify-center gap-2 w-full sm:w-auto text-sm sm:text-base"
-          size="lg"
-        >
-          <Download className="w-4 h-4 sm:w-5 sm:h-5" />
-          Download Prescription
-        </Button>
-      </div>
+      {/* Download Button - Only show when not being used for PDF generation */}
+      {onDownload && (
+        <div className="flex justify-center md:justify-end px-4 sm:px-6 md:px-8 mt-6 mb-4">
+          <Button 
+            onClick={handleDownloadPrescription}
+            className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 sm:px-8 py-2 sm:py-3 rounded-full shadow-lg hover:shadow-xl flex items-center justify-center gap-2 w-full sm:w-auto text-sm sm:text-base font-medium transition-colors"
+            size="lg"
+            type="button"
+          >
+            <Download className="w-5 h-5 sm:w-6 sm:h-6" />
+            Download Prescription
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

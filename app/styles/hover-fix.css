@@ -1,0 +1,498 @@
+/* Hover Fix for Text Visibility in Light Theme */
+
+/* General hover text fixes */
+a:hover, button:hover, .hover-element:hover {
+  text-decoration: underline;
+  font-weight: 500;
+  /* Ensure text is visible */
+  color: inherit !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  filter: none !important;
+  visibility: visible !important;
+}
+
+/* Exception for gradient text links */
+a.text-transparent:hover {
+  text-decoration: none !important;
+}
+
+/* Fix for gradient text hover issues */
+.text-transparent:hover,
+[class*="bg-clip-text"].text-transparent:hover,
+[class*="bg-gradient-to-r"].text-transparent:hover,
+.bg-gradient-to-r.text-transparent:hover,
+.bg-gradient-to-br.text-transparent:hover,
+[class*="hover:from-"][class*="hover:to-"] {
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  color: transparent !important;
+  text-decoration: none !important;
+  text-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Preserve hover gradient changes */
+[class*="hover:from-"][class*="hover:to-"]:hover {
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  color: transparent !important;
+}
+
+/* Stat card hover fixes */
+.stat-card:hover .stat-value,
+.stat-card:hover .stat-label,
+.stat-card:hover .stat-text {
+  /* Removed dark blue color override to restore original color */
+  opacity: 1 !important;
+  text-shadow: none !important;
+  filter: none !important;
+  font-weight: 600;
+}
+
+/* Fix for specific buttons that are not visible */
+[href*="/doctor/reviews"],
+[href*="/doctor/appointments"],
+[href*="/doctor/schedule"],
+[href*="/doctor/prescriptions"],
+[href*="/doctor/prescriptions/new"],
+.calendar-view-button,
+.view-prescription-button,
+.create-prescription-button {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: inherit !important;
+  background-color: white !important;
+  border: none !important;
+  text-decoration: none !important;
+}
+
+/* Ensure button icons are visible */
+button svg,
+a svg {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: inline-block !important;
+}
+
+/* Appointment card hover fixes */
+.appointment-card:hover .appointment-title,
+.appointment-card:hover .appointment-text,
+.appointment-card:hover .appointment-info,
+.appointment-card:hover span,
+.appointment-card:hover p {
+  /* Removed dark blue color override to restore original color */
+  opacity: 1 !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+/* Quick action button hover fixes */
+.quick-action-btn:hover span,
+.quick-action-btn:hover .btn-text,
+button[variant="outline"]:hover,
+button:hover:not([class*="bg-gradient-to-r"]):not([class*="bg-blue-"]):not([class*="from-"]):not(.text-green-700):not(.text-blue-600):not(.text-blue-700) {
+  color: #1e3a8a !important; /* Dark blue for better contrast */
+  opacity: 1 !important;
+  text-shadow: none !important;
+  filter: none !important;
+  font-weight: 600;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Make text solid white when hovering over blue background buttons */
+button.bg-blue-500:hover,
+button.bg-gradient-to-r.from-blue-500:hover,
+button.bg-gradient-to-r.from-blue-600:hover,
+button.bg-gradient-to-r.from-indigo-500:hover,
+button.bg-gradient-to-r.from-indigo-600:hover,
+button.from-blue-500.to-purple-500:hover,
+button.from-blue-600.to-purple-600:hover,
+button.from-indigo-500.to-purple-600:hover,
+button.from-indigo-600.to-purple-700:hover,
+button.bg-blue-500,
+button.bg-blue-500:hover,
+button.bg-blue-600:hover,
+button.bg-blue-700:hover,
+button.bg-green-500:hover,
+button.bg-green-600:hover,
+button.bg-green-700:hover,
+button.save-schedule-btn:hover,
+button.mark-complete-btn:hover {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+  text-decoration: none !important;
+}
+
+/* Ensure text inside blue buttons is white on hover */
+button.bg-blue-500:hover *,
+button.bg-gradient-to-r.from-blue-500:hover *,
+button.bg-gradient-to-r.from-blue-600:hover *,
+button.bg-gradient-to-r.from-indigo-500:hover *,
+button.bg-gradient-to-r.from-indigo-600:hover *,
+button.from-blue-500.to-purple-500:hover *,
+button.from-blue-600.to-purple-600:hover *,
+button.from-indigo-500.to-purple-600:hover *,
+button.from-indigo-600.to-purple-700:hover *,
+button.bg-blue-500 *,
+button.bg-blue-500:hover *,
+button.bg-blue-600 *,
+button.bg-blue-600:hover *,
+button.bg-blue-700 *,
+button.bg-blue-700:hover * {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Specific fixes for doctor dashboard buttons */
+button:has(svg.w-3.h-3) span,
+button:has(svg.w-4.h-4) span,
+button:has(.mr-2) span,
+button:hover:has(Users),
+button:hover:has(Activity),
+button:hover:has(Clock),
+button:hover:has(Bell),
+button:hover:has(Calendar),
+button:has(Users),
+button:has(Activity),
+button:has(Clock),
+button:has(Bell),
+button:has(Calendar) {
+  color: #1e3a8a !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  visibility: visible !important;
+}
+
+/* Direct fixes for the specific buttons mentioned */
+button[onclick*="/doctor/patients"],
+button[onclick*="/doctor/analytics"],
+button[onclick*="/doctor/schedule"],
+button[onclick*="loadAppointments"],
+button:has(Users),
+button:has(Activity),
+button:has(Clock),
+button:has(Bell) {
+  color: #1e3a8a !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  visibility: visible !important;
+  /* Removed border */
+  border: none !important;
+}
+
+button[onclick*="/doctor/patients"] *,
+button[onclick*="/doctor/analytics"] *,
+button[onclick*="/doctor/schedule"] *,
+button[onclick*="loadAppointments"] *,
+button:has(Users) *,
+button:has(Activity) *,
+button:has(Clock) *,
+button:has(Bell) * {
+  color: #1e3a8a !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  visibility: visible !important;
+}
+
+/* Additional specific fixes for the doctor dashboard buttons */
+.w-full.justify-start,
+.border-gray-200.text-gray-700,
+.border-blue-300.text-blue-700,
+button:has(Eye),
+button:has(LogOut),
+button:has(.w-full.justify-start),
+button:has(.text-blue-400),
+button:has(.text-red-600),
+button[onClick*="/doctor/appointments"] {
+  color: #1e3a8a !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  visibility: visible !important;
+  /* Removed forced white background */
+}
+
+/* Preserve blue button styling in doctor dashboard */
+button:has(.bg-blue-500) {
+  background-color: inherit !important;
+  color: inherit !important;
+}
+
+/* Ensure blue buttons in doctor section maintain blue background */
+button.bg-blue-500, 
+button.bg-blue-500:hover,
+button.bg-blue-600, 
+button.bg-blue-600:hover,
+button.bg-blue-700, 
+button.bg-blue-700:hover,
+button.bg-gradient-to-r.from-blue-500,
+button.bg-gradient-to-r.from-blue-600,
+button.from-blue-500,
+button.from-blue-600,
+button.from-blue-700 {
+  background-color: white !important;
+  color: #3b82f6 !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.w-full.justify-start *,
+.border-gray-200.text-gray-700 *,
+.border-blue-300.text-blue-700 *,
+button:has(Eye) *,
+button:has(LogOut) *,
+button:has(.w-full.justify-start) *,
+button:has(.bg-blue-500) *,
+button:has(.text-blue-400) *,
+button:has(.text-red-600) *,
+button[onClick*="/doctor/appointments"] * {
+  color: #1e3a8a !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  visibility: visible !important;
+}
+
+/* Fix for blur effects */
+button:hover,
+button:hover span,
+button:hover svg,
+button.text-gray-700:hover,
+button.text-red-600:hover,
+button:has(Eye):hover,
+button:has(LogOut):hover {
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  blur: none !important;
+  -webkit-blur: none !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  /* Only apply dark blue text to non-blue buttons */
+  color: inherit !important;
+}
+
+/* Preserve text color for specific buttons */
+button.text-green-700:hover,
+button.text-green-700:hover span,
+button.text-blue-600:hover,
+button.text-blue-600:hover span,
+button.text-blue-700:hover,
+button.text-blue-700:hover span {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+/* Preserve blue button styling */
+button.bg-blue-500:hover,
+button.bg-blue-600:hover,
+button.bg-blue-700:hover,
+button.bg-gradient-to-r.from-blue-500:hover,
+button.bg-gradient-to-r.from-blue-600:hover,
+button.from-blue-500:hover,
+button.from-blue-600:hover,
+button.from-blue-700:hover {
+  color: white !important;
+  background-color: inherit !important;
+}
+
+/* Preserve on/off toggle switch styling */
+[data-state=checked] {
+  background-color: #3b82f6 !important;
+}
+
+[data-state=checked]:hover {
+  background-color: #3b82f6 !important;
+}
+
+/* Ensure blue buttons maintain their blue background */
+button.bg-blue-500 {
+  background-color: #3b82f6 !important;
+}
+
+button.bg-blue-600 {
+  background-color: #2563eb !important;
+}
+
+button.bg-blue-700 {
+  background-color: #1d4ed8 !important;
+}
+
+/* Specific buttons with blue text */
+button[onClick*="/doctor/reviews"],
+button[onClick*="calendar"],
+button[onClick*="prescription"],
+button[onClick*="schedule"],
+.view-patient-reviews-btn,
+.calendar-view-btn,
+.view-prescription-btn,
+.save-schedule-btn,
+a[href*="/doctor/reviews"],
+.doctor-dashboard a[href*="reviews"],
+.doctor-dashboard a.bg-gradient-to-r,
+a.flex.items-center.justify-between.w-full.px-4.py-3.transition-all.duration-300.rounded-lg.shadow-md.hover\:shadow-lg {
+  background-color: white !important;
+  background-image: none !important;
+  color: #3b82f6 !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+button[onClick*="/doctor/reviews"]:hover,
+button[onClick*="calendar"]:hover,
+button[onClick*="prescription"]:hover,
+button[onClick*="schedule"]:hover,
+.view-patient-reviews-btn:hover,
+.calendar-view-btn:hover,
+.view-prescription-btn:hover,
+.save-schedule-btn:hover,
+a[href*="/doctor/reviews"]:hover,
+.doctor-dashboard a[href*="reviews"]:hover,
+.doctor-dashboard a.bg-gradient-to-r:hover,
+a.flex.items-center.justify-between.w-full.px-4.py-3.transition-all.duration-300.rounded-lg.shadow-md.hover\:shadow-lg:hover {
+  background-color: #f8fafc !important;
+  background-image: none !important;
+  color: #3b82f6 !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+/* Ensure gradient buttons maintain their gradient background */
+button.bg-gradient-to-r.from-blue-500,
+button.bg-gradient-to-r.from-blue-600,
+button.from-blue-500,
+button.from-blue-600,
+button.from-blue-700 {
+  background-image: inherit !important;
+  background-color: transparent !important;
+}
+
+/* Ensure blue buttons in doctor section maintain blue background on hover */
+button.bg-blue-500:hover {
+  background-color: #3b82f6 !important;
+}
+
+button.bg-blue-600:hover {
+  background-color: #2563eb !important;
+}
+
+button.bg-blue-700:hover {
+  background-color: #1d4ed8 !important;
+}
+
+/* Navigation link hover fixes */
+nav a:hover,
+.nav-link:hover,
+.sidebar-link:hover,
+nav button:hover,
+nav .dropdown-menu button:hover,
+button.text-red-600,
+button.hover\:text-red-600:hover,
+button.hover\:text-red-700:hover,
+button.hover\:text-blue-600:hover,
+button.hover\:text-blue-400:hover,
+button.hover\:bg-blue-50:hover {
+  color: #1e3a8a !important;
+  text-decoration: underline;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  blur: none !important;
+  -webkit-blur: none !important;
+  font-weight: 600;
+  visibility: visible !important;
+}
+
+/* Fix for doctor navbar overflow in desktop view */
+@media (min-width: 1024px) {
+  nav .hidden.lg\:flex.items-center {
+    max-width: calc(100% - 350px);
+    overflow-x: auto;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    padding: 0 5px;
+  }
+  
+  nav .hidden.lg\:flex.items-center::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+  
+  /* Ensure logo doesn't get squeezed */
+  nav .flex.items-center.flex-shrink-0 {
+    min-width: 140px;
+    flex-shrink: 0;
+  }
+  
+  /* Ensure right side user info has enough space */
+  nav .flex.items-center.space-x-3.sm\:space-x-4 {
+    min-width: 180px;
+    flex-shrink: 0;
+  }
+  
+  /* Reduce spacing between nav items */
+  nav .hidden.lg\:flex.items-center a button {
+    margin: 0 1px;
+  }
+
+  /* Make navbar buttons more compact */
+  nav .hidden.lg\:flex.items-center a button svg {
+    margin-right: 2px;
+  }
+}
+
+/* Dialog and modal text hover fixes */
+.enhanced-dialog button:hover,
+.enhanced-dialog a:hover,
+.enhanced-dialog-content button:hover,
+.enhanced-dialog-content a:hover {
+  /* Removed dark blue color override to restore original color */
+  opacity: 1 !important;
+  text-shadow: none !important;
+  filter: none !important;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+/* Status badge hover fixes - ensure text remains visible */
+.status-badge:hover {
+  transform: scale(1.05);
+  font-weight: 600;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+/* Ensure white text on colored backgrounds remains visible */
+.status-badge.confirmed:hover,
+.status-badge.pending:hover,
+.status-badge.cancelled:hover,
+.status-badge.completed:hover {
+  color: white !important;
+  opacity: 1 !important;
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.5) !important; /* Subtle text shadow for better readability */
+}
+
+/* Fix for any gradient text that might become unreadable on hover */
+[class*="gradient"]:hover,
+[class*="bg-gradient"]:hover {
+  /* Removed dark blue color override to restore original color */
+  background-clip: border-box !important;
+  -webkit-text-fill-color: initial !important;
+  text-fill-color: initial !important;
+  opacity: 1 !important;
+}

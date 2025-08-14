@@ -11,14 +11,15 @@ const nextConfig = {
   },
   output: 'standalone',
   trailingSlash: true,
-  async rewrites() {
-    return [
-      {
-        source: '/(.*)',
-        destination: '/',
-      },
-    ];
-  },
+  // Removed problematic rewrites that were causing routing issues
+  // async rewrites() {
+  //   return [
+  //     {
+  //       source: '/(.*)',
+  //       destination: '/',
+  //     },
+  //   ];
+  // },
 }
 
 export default nextConfig

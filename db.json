@@ -10,8 +10,8 @@
       "qualifications": "MD, FACC",
       "experience": "15 years",
       "clinicAddress": "Heart Care Center, 123 Medical Plaza, New York",
-      "rating": 4.8,
-      "reviewCount": 156,
+      "rating": 5,
+      "reviewCount": 2,
       "consultationFee": 150,
       "videoConsultationFee": 100,
       "availability": {
@@ -40,7 +40,8 @@
         "clinic",
         "video",
         "call"
-      ]
+      ],
+      "callConsultationFee": 75
     },
     {
       "id": "2",
@@ -82,7 +83,8 @@
         "clinic",
         "video",
         "call"
-      ]
+      ],
+      "callConsultationFee": 60
     },
     {
       "id": "3",
@@ -122,7 +124,8 @@
       "consultationType": [
         "clinic",
         "video"
-      ]
+      ],
+      "callConsultationFee": 113
     },
     {
       "id": "4",
@@ -163,7 +166,8 @@
         "clinic",
         "video",
         "call"
-      ]
+      ],
+      "callConsultationFee": 53
     },
     {
       "id": "5",
@@ -203,7 +207,8 @@
       "consultationType": [
         "clinic",
         "video"
-      ]
+      ],
+      "callConsultationFee": 98
     },
     {
       "id": "6",
@@ -244,7 +249,8 @@
         "clinic",
         "video",
         "call"
-      ]
+      ],
+      "callConsultationFee": 68
     }
   ],
   "patients": [
@@ -254,6 +260,13 @@
       "email": "emma@healthplus.com",
       "password": "patient2023",
       "phone": "+1-555-1001"
+    },
+    {
+      "id": "2",
+      "name": "Jessica Miller",
+      "email": "jessica@example.com",
+      "password": "patient2023",
+      "phone": "+1 (555) 987-6543"
     }
   ],
   "appointments": [
@@ -268,8 +281,24 @@
       "time": "11:00",
       "status": "completed",
       "consultationType": "clinic",
-      "symptoms": "",
+      "symptoms": "Chest pain, shortness of breath",
+      "diagnosis": "Mild hypertension",
       "fee": 150
+    },
+    {
+      "id": "1753686864325",
+      "doctorId": "2",
+      "patientId": "2",
+      "doctorName": "Dr. Jennifer Lee",
+      "patientName": "Jessica Miller",
+      "specialty": "Dermatology",
+      "date": "2025-07-25",
+      "time": "09:00",
+      "status": "completed",
+      "consultationType": "clinic",
+      "symptoms": "Skin rash, itching",
+      "diagnosis": "Contact dermatitis",
+      "fee": 120
     },
     {
       "id": "1753686925998",
@@ -282,7 +311,8 @@
       "time": "12:00",
       "status": "cancelled",
       "consultationType": "video",
-      "symptoms": "",
+      "symptoms": "Fever, sore throat",
+      "diagnosis": "Suspected strep throat",
       "fee": 70
     },
     {
@@ -294,9 +324,10 @@
       "specialty": "Orthopedics",
       "date": "2025-07-31",
       "time": "11:30",
-      "status": "confirmed",
+      "status": "completed",
       "consultationType": "clinic",
-      "symptoms": "",
+      "symptoms": "Lower back pain, difficulty bending",
+      "diagnosis": "Lumbar strain",
       "fee": 180
     },
     {
@@ -308,7 +339,7 @@
       "specialty": "Gynecology",
       "date": "2025-08-01",
       "time": "14:00",
-      "status": "confirmed",
+      "status": "completed",
       "consultationType": "clinic",
       "symptoms": "",
       "fee": 130
@@ -354,15 +385,43 @@
       "consultationType": "call",
       "symptoms": "",
       "fee": 80
+    },
+    {
+      "doctorId": "1",
+      "patientId": "1",
+      "doctorName": "Dr. Robert Williams",
+      "patientName": "Emma Thompson",
+      "specialty": "Cardiology",
+      "date": "2025-08-12",
+      "time": "09:00",
+      "status": "pending",
+      "consultationType": "video",
+      "symptoms": "",
+      "fee": 100,
+      "id": "1754667466228"
+    },
+    {
+      "doctorId": "1",
+      "patientId": "1",
+      "doctorName": "Dr. Robert Williams",
+      "patientName": "Emma Thompson",
+      "specialty": "Cardiology",
+      "date": "2025-08-16",
+      "time": "10:00",
+      "status": "completed",
+      "consultationType": "call",
+      "symptoms": "",
+      "fee": 75,
+      "id": "1754973847010"
     }
   ],
   "prescriptions": [
     {
       "id": "1",
       "doctorId": "1",
-      "doctorName": "Dr. Sarah Johnson",
+      "doctorName": "Dr. Robert Williams",
       "patientId": "1",
-      "patientName": "John Doe",
+      "patientName": "Emma Thompson",
       "appointmentId": "1753686864324",
       "date": "2025-07-30",
       "medicines": [
@@ -380,11 +439,33 @@
       "notes": "Take with food. Avoid grapefruit juice with Atorvastatin. Follow up in 1 month."
     },
     {
+      "id": "3",
+      "doctorId": "2",
+      "doctorName": "Dr. Jennifer Lee",
+      "patientId": "2",
+      "patientName": "Jessica Miller",
+      "appointmentId": "1753686864325",
+      "date": "2025-07-25",
+      "medicines": [
+        {
+          "name": "Hydrocortisone cream",
+          "dosage": "Apply to affected area twice daily",
+          "duration": "14 days"
+        },
+        {
+          "name": "Cetirizine",
+          "dosage": "10mg once daily",
+          "duration": "7 days"
+        }
+      ],
+      "notes": "Avoid hot showers and irritating soaps. Wear loose cotton clothing. Follow up if not improving within a week."
+    },
+    {
       "id": "2",
       "doctorId": "4",
       "doctorName": "Dr. Aisha Khan",
       "patientId": "1",
-      "patientName": "John Doe",
+      "patientName": "Emma Thompson",
       "appointmentId": "1753686925998",
       "date": "2025-07-29",
       "medicines": [
@@ -395,6 +476,44 @@
         }
       ],
       "notes": "Complete the full course even if symptoms improve. Drink plenty of fluids."
+    }
+  ],
+  "reviews": [
+    {
+      "id": "1",
+      "appointmentId": "1753687362987",
+      "doctorId": "5",
+      "patientId": "1",
+      "rating": 5,
+      "reviewText": "Dr. Patel was very thorough and explained my condition clearly. The treatment has been effective.",
+      "createdAt": "2025-08-01T10:30:00Z"
+    },
+    {
+      "id": "2",
+      "appointmentId": "1753687815468",
+      "doctorId": "6",
+      "patientId": "1",
+      "rating": 4,
+      "reviewText": "Good experience overall. The doctor was knowledgeable and professional.",
+      "createdAt": "2025-08-02T14:15:00Z"
+    },
+    {
+      "id": "3",
+      "appointmentId": "1753689506109",
+      "doctorId": "1",
+      "patientId": "1",
+      "rating": 5,
+      "reviewText": "Excellent care and attention to detail. Would highly recommend Dr. Williams.",
+      "createdAt": "2025-07-31T16:45:00Z"
+    },
+    {
+      "appointmentId": "1753686864324",
+      "doctorId": "1",
+      "patientId": "1",
+      "rating": 5,
+      "reviewText": "The doctor is very good.",
+      "id": "1755066609367",
+      "createdAt": "2025-08-13T06:30:09.367Z"
     }
   ]
 }

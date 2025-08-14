@@ -83,7 +83,7 @@ export default function HomePage() {
       return
     }
     // Redirect to booking page with doctor ID and consultation type
-    router.push(`/book-appointment/${doctor.id}?type=${consultationType}`)
+    router.push(`/booking/${doctor.id}?type=${consultationType}`)
   }
 
   useEffect(() => {
@@ -311,14 +311,21 @@ export default function HomePage() {
                               <Building className="w-5 h-5 mr-2 text-blue-600" />
                               <span className="text-gray-700 font-medium">Clinic Visit:</span>
                             </div>
-                            <span className="font-bold text-green-600 text-lg">${doctor.consultationFee}</span>
+                            <span className="font-bold text-green-600 text-lg">${doctor.consultationFee || 50}</span>
                           </div>
-                          <div className="flex justify-between items-center text-sm">
+                          <div className="flex justify-between items-center text-sm mb-2">
                             <div className="flex items-center">
                               <Video className="w-5 h-5 mr-2 text-purple-600" />
                               <span className="text-gray-700 font-medium">Video Call:</span>
                             </div>
-                            <span className="font-bold text-green-600 text-lg">${doctor.videoConsultationFee}</span>
+                            <span className="font-bold text-green-600 text-lg">${doctor.videoConsultationFee || 40}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-sm">
+                            <div className="flex items-center">
+                              <Phone className="w-5 h-5 mr-2 text-green-600" />
+                              <span className="text-gray-700 font-medium">Phone Call:</span>
+                            </div>
+                            <span className="font-bold text-green-600 text-lg">${doctor.callConsultationFee || 30}</span>
                           </div>
                         </div>
 
@@ -334,7 +341,6 @@ export default function HomePage() {
                         {/* Enhanced Booking Buttons */}
                         <div className="space-y-3 pt-4 border-t border-gray-100">
                           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                            <Link href={`/doctor/${doctor.id}`}>
                             <Button
                               className="w-full h-12 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white font-semibold shadow-lg hover:shadow-xl rounded-2xl transition-all duration-300"
                               onClick={() => handleBookAppointment(doctor, "clinic")}
@@ -342,11 +348,9 @@ export default function HomePage() {
                               <Building className="w-5 h-5 mr-2" />
                               Book Clinic Visit
                             </Button>
-                            </Link>
                           </motion.div>
                           <div className="grid grid-cols-2 gap-3">
                             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                              <Link href={`/booking/${doctor.id}?type=video`}>
                               <Button
                                 variant="outline"
                                 className="w-full h-12 border-2 border-blue-200 text-blue-600 hover:bg-blue-50 bg-white/80 backdrop-blur-sm rounded-2xl font-semibold transition-all duration-300"
@@ -355,10 +359,8 @@ export default function HomePage() {
                                 <Video className="w-5 h-5 mr-1" />
                                 Video
                               </Button>
-                              </Link>
                             </motion.div>
                             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                              <Link href={`/booking/${doctor.id}?type=call`}>
                               <Button
                                 variant="outline"
                                 className="w-full h-12 border-2 border-green-200 text-green-600 hover:bg-green-50 bg-white/80 backdrop-blur-sm rounded-2xl font-semibold transition-all duration-300"
@@ -367,7 +369,6 @@ export default function HomePage() {
                                 <Phone className="w-5 h-5 mr-1" />
                                 Call
                               </Button>
-                              </Link>
                             </motion.div>
                           </div>
                         </div>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 import { ProtectedRoute } from "@/components/ProtectedRoute"
-import { Navbar } from "@/components/Navbar"
+import { ModernNavbar } from "@/components/ModernNavbar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -42,6 +42,8 @@ import { Label } from "@/components/ui/label"
 import { useSearchParams, useRouter } from "next/navigation"
 import { format } from "date-fns" // For date formatting
 import "../../styles/doctor-appointments.css"
+import "../../styles/jessica-fix.css"
+import "../../styles/hover-fix.css"
 
 // Import the new calendar component
 import DoctorCalendarView from "@/components/doctor-calendar-view"
@@ -399,9 +401,8 @@ export default function DoctorAppointmentsPage() {
                 </Button>
                 <Button
                   size="sm"
-                  variant="outline"
                   onClick={() => router.push(`/doctor/prescriptions?appointmentId=${appointment.id}`)}
-                  className="w-full border-cyan-300 text-cyan-700 hover:bg-cyan-50 hover:border-cyan-400"
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white view-prescription-btn"
                 >
                   <Pill className="w-4 h-4 mr-2" />
                   View Prescriptions
@@ -417,7 +418,7 @@ export default function DoctorAppointmentsPage() {
   return (
     <ProtectedRoute allowedRoles={["doctor"]}>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-        <Navbar />
+        <ModernNavbar />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="text-center mb-12">
@@ -431,7 +432,7 @@ export default function DoctorAppointmentsPage() {
           <div className="flex justify-end mb-6 relative z-20">
             <Button
               onClick={() => setViewMode(viewMode === "list" ? "calendar" : "list")}
-              className="view-toggle-btn bg-blue-600 hover:bg-blue-700 text-white relative z-20 pointer-events-auto"
+              className="view-toggle-btn bg-blue-500 hover:bg-blue-600 text-white relative z-20 pointer-events-auto calendar-view-btn"
               style={{ cursor: 'pointer' }}
             >
               {viewMode === "list" ? <><CalendarIcon className="w-4 h-4 mr-2" /> Calendar View</> : <><List className="w-4 h-4 mr-2" /> List View</>}

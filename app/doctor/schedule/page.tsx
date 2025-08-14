@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 import { ProtectedRoute } from "@/components/ProtectedRoute"
-import { Navbar } from "@/components/Navbar"
+import { ModernNavbar } from "@/components/ModernNavbar"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -23,6 +23,7 @@ import { ArrowLeft, Calendar, Plus, Edit, Trash2, Save } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
 import "../../styles/doctor-schedule.css"
+import "../../styles/hover-fix.css"
 
 export default function SchedulePage() {
   const { user } = useAuth()
@@ -371,7 +372,7 @@ export default function SchedulePage() {
   return (
     <ProtectedRoute allowedRoles={["doctor"]}>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50 schedule-container">
-        <Navbar />
+        <ModernNavbar />
         <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8 space-y-4 sm:space-y-0 schedule-header">
@@ -406,7 +407,7 @@ export default function SchedulePage() {
             <Button
               onClick={saveSchedule}
               disabled={isSaving}
-              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 schedule-btn"
+              className="bg-blue-500 hover:bg-blue-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 schedule-btn save-schedule-btn"
             >
               <Save className="w-4 h-4 mr-2" />
               {isSaving ? "Saving..." : "Save Schedule"}

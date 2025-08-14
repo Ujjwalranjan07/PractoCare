@@ -425,6 +425,17 @@
   .mobile-grid {
     @apply grid-cols-1 gap-4;
   }
+  
+  /* Fix for overlapping buttons in mobile view */
+  .flex-col > button,
+  .flex-col > a {
+    margin-bottom: 0.75rem;
+  }
+  
+  .flex-col > button:last-child,
+  .flex-col > a:last-child {
+    margin-bottom: 0;
+  }
 }
 
 /* Tablet Optimizations */

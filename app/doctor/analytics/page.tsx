@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 import { ProtectedRoute } from "@/components/ProtectedRoute"
-import { Navbar } from "@/components/Navbar"
+import { ModernNavbar } from "@/components/ModernNavbar"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -12,6 +12,7 @@ import { TrendingUp, Users, Calendar, Clock, ArrowLeft, DollarSign, Activity } f
 import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
 import "../../styles/doctor-analytics.css"
+import "../../styles/hover-fix.css"
 
 export default function AnalyticsPage() {
   const { user } = useAuth()
@@ -237,7 +238,7 @@ export default function AnalyticsPage() {
   return (
     <ProtectedRoute allowedRoles={["doctor"]}>
       <div className="analytics-container min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50">
-        <Navbar />
+        <ModernNavbar />
         <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
           {/* Header */}
           <div className="analytics-header flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8 space-y-4 sm:space-y-0">

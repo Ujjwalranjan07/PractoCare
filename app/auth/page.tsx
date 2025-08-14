@@ -161,7 +161,7 @@ export default function AuthPage() {
                     id="role-switch"
                     checked={isDoctor}
                     onCheckedChange={setIsDoctor}
-                    className="data-[state=checked]:bg-purple-600 data-[state=unchecked]:bg-blue-600"
+                    className="data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-blue-500 border-2 border-gray-300"
                   />
                   <div
                     className={`flex items-center space-x-2 transition-all duration-300 ${isDoctor ? "text-purple-500 scale-110" : "text-gray-500"}`}
@@ -179,7 +179,7 @@ export default function AuthPage() {
                     type="button"
                     onClick={() => setIsLogin(true)}
                     className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-300 ${
-                      isLogin ? "bg-white text-gray-900 shadow-lg" : "text-gray-600 hover:bg-gray-200"
+                      isLogin ? "bg-blue-500 text-white shadow-lg" : "text-gray-600 hover:bg-gray-200"
                     }`}
                   >
                     Sign In
@@ -188,7 +188,7 @@ export default function AuthPage() {
                     type="button"
                     onClick={() => setIsLogin(false)}
                     className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-300 ${
-                      !isLogin ? "bg-white text-gray-900 shadow-lg" : "text-gray-600 hover:bg-gray-200"
+                      !isLogin ? "bg-blue-500 text-white shadow-lg" : "text-gray-600 hover:bg-gray-200"
                     }`}
                   >
                     Sign Up
@@ -363,9 +363,9 @@ export default function AuthPage() {
                     type="submit"
                     className={`w-full h-14 text-lg font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 ${
                       isDoctor
-                        ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                        : "bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
-                    } shadow-2xl animate-slideInUp animation-delay-500 text-white`}
+                        ? "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+                        : "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+                    } shadow-2xl animate-slideInUp animation-delay-500 text-white border-2 border-gray-300`}
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -438,7 +438,7 @@ export default function AuthPage() {
                   id="role-switch-mobile"
                   checked={isDoctor}
                   onCheckedChange={setIsDoctor}
-                  className="data-[state=checked]:bg-purple-600 data-[state=unchecked]:bg-blue-600"
+                  className="data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-blue-500 border-2 border-gray-300"
                 />
                 <div
                   className={`flex items-center space-x-2 transition-all duration-300 ${isDoctor ? "text-purple-500 scale-110" : "text-gray-500"}`}
@@ -456,7 +456,7 @@ export default function AuthPage() {
                   type="button"
                   onClick={() => setIsLogin(true)}
                   className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-300 ${
-                    isLogin ? "bg-white text-gray-900 shadow-lg" : "text-gray-600 hover:bg-gray-200"
+                    isLogin ? "bg-blue-500 text-white shadow-lg" : "text-gray-600 hover:bg-gray-200"
                   }`}
                 >
                   Sign In
@@ -465,7 +465,7 @@ export default function AuthPage() {
                   type="button"
                   onClick={() => setIsLogin(false)}
                   className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-300 ${
-                    !isLogin ? "bg-white text-gray-900 shadow-lg" : "text-gray-600 hover:bg-gray-200"
+                    !isLogin ? "bg-blue-500 text-white shadow-lg" : "text-gray-600 hover:bg-gray-200"
                   }`}
                 >
                   Sign Up
@@ -640,9 +640,9 @@ export default function AuthPage() {
                   type="submit"
                   className={`w-full h-14 text-lg font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 ${
                     isDoctor
-                      ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                      : "bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
-                  } shadow-2xl animate-slideInUp animation-delay-500 text-white`}
+                      ? "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+                      : "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+                  } shadow-2xl animate-slideInUp animation-delay-500 text-white border-2 border-gray-300`}
                   disabled={isLoading}
                 >
                   {isLoading ? (

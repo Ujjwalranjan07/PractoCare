@@ -9,7 +9,18 @@ export interface Doctor {
   qualifications: string
   experience: string
   clinicAddress: string
-  availability?: TimeSlot[]
+  consultationFee: number
+  videoConsultationFee: number
+  callConsultationFee: number
+  consultationType?: string[]
+  rating?: number
+  reviewCount?: number
+  about?: string
+  image?: string
+  availability?: TimeSlot[] | {
+    clinic?: string[]
+    online?: string[]
+  }
 }
 
 export interface Patient {
@@ -39,7 +50,131 @@ export interface Appointment {
   doctorName: string
   patientName: string
   specialty: string
+  consultationType: "clinic" | "video" | "call"
+  symptoms?: string
+  fee?: number
 }
+
+export interface Review {
+  id: string
+  appointmentId: string
+  doctorId: string
+  patientId: string
+  rating: number
+  reviewText: string
+  createdAt: string
+}
+
+// Reviews API
+export const reviewsAPI = {
+  async getByDoctorId(doctorId: string): Promise<Review[]> {
+    try {
+      const response = await fetchWithRetry(`${BASE_URL}/reviews?doctorId=${doctorId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch reviews");
+      }
+      return response.json();
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error("Cannot connect to server. Please check your internet connection or try again later.");
+      }
+      throw error;
+    }
+  },
+
+  async getByAppointmentId(appointmentId: string): Promise<Review | null> {
+    try {
+      const response = await fetchWithRetry(`${BASE_URL}/reviews?appointmentId=${appointmentId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch review");
+      }
+      const reviews = await response.json();
+      return reviews.length > 0 ? reviews[0] : null;
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error("Cannot connect to server. Please check your internet connection or try again later.");
+      }
+      throw error;
+    }
+  },
+
+  async create(reviewData: Omit<Review, "id" | "createdAt">): Promise<Review> {
+    try {
+      const response = await fetchWithRetry(`${BASE_URL}/reviews`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...reviewData,
+          id: Date.now().toString(),
+          createdAt: new Date().toISOString(),
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to create review");
+      }
+      return response.json();
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error("Cannot connect to server. Please check your internet connection or try again later.");
+      }
+      throw error;
+    }
+  },
+
+  async update(id: string, reviewData: Partial<Review>): Promise<Review> {
+    try {
+      const response = await fetchWithRetry(`${BASE_URL}/reviews/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reviewData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update review");
+      }
+      return response.json();
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error("Cannot connect to server. Please check your internet connection or try again later.");
+      }
+      throw error;
+    }
+  },
+
+  async delete(id: string): Promise<void> {
+    try {
+      const response = await fetchWithRetry(`${BASE_URL}/reviews/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete review");
+      }
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error("Cannot connect to server. Please check your internet connection or try again later.");
+      }
+      throw error;
+    }
+  },
+
+  async getPatientReviews(patientId: string): Promise<Review[]> {
+    try {
+      const response = await fetchWithRetry(`${BASE_URL}/reviews?patientId=${patientId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch patient reviews");
+      }
+      return response.json();
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error("Cannot connect to server. Please check your internet connection or try again later.");
+      }
+      throw error;
+    }
+  },
+};
 
 // Fetch with retry mechanism
 const fetchWithRetry = async (url: string, options = {}, retries = 3, delay = 1000) => {

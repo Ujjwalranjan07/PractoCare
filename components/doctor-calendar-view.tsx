@@ -496,7 +496,7 @@ export default function DoctorCalendarView({ appointments, onReschedule, onUpdat
                   <XCircle className="w-4 h-4 mr-2" />
                   Cancel Appointment
                 </Button>
-                <Button className="bg-blue-500 hover:bg-blue-600 text-white" onClick={handleCompleteFromDetails}>
+                <Button className="bg-green-500 hover:bg-green-600 text-white" onClick={handleCompleteFromDetails}>
                   <CheckCircle className="w-4 h-4 mr-2" />
                   Mark Complete
                 </Button>
@@ -514,7 +514,7 @@ export default function DoctorCalendarView({ appointments, onReschedule, onUpdat
                   <XCircle className="w-4 h-4 mr-2" />
                   Cancel Appointment
                 </Button>
-                <Button className="bg-blue-500 hover:bg-blue-600 text-white" onClick={handleCompleteFromDetails}>
+                <Button className="bg-green-500 hover:bg-green-600 text-white" onClick={handleCompleteFromDetails}>
                   <CheckCircle className="w-4 h-4 mr-2" />
                   Mark Complete
                 </Button>

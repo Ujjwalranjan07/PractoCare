@@ -33,13 +33,12 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(59, 130, 246, 0.1);
+  border: none;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
 }
 
 .filter-section:hover {
   box-shadow: 0 8px 20px rgba(59, 130, 246, 0.1);
-  border-color: rgba(59, 130, 246, 0.2);
 }
 
 /* View Toggle Button Effects */
@@ -78,7 +77,7 @@
 .status-filter-trigger {
   background: white;
   color: #1f2937;
-  border-color: #d1d5db;
+  border: none;
   transition: all 0.3s ease;
   z-index: 10;
   pointer-events: auto;
@@ -86,14 +85,13 @@
 }
 
 .status-filter-trigger:hover {
-  border-color: #3b82f6;
   box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.1);
 }
 
 .status-filter-content {
   background: white;
   color: #1f2937;
-  border-color: #d1d5db;
+  border: none;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 50;
   pointer-events: auto;
@@ -112,14 +110,30 @@ input[type="text"], input:not([type]) {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(59, 130, 246, 0.1);
+  border: none;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+/* Calendar view button fix */
+.calendar-view-button,
+[href*="view=calendar"] {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #3b82f6 !important; /* Changed to blue */
+  background-color: white !important;
+  border: 1px solid #e2e8f0 !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 0.375rem !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
 }
 
 .appointment-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(59, 130, 246, 0.1);
-  border-color: rgba(59, 130, 246, 0.2);
 }
 
 .appointment-card::before {
@@ -172,11 +186,10 @@ input[type="text"], input:not([type]) {
 /* Search Input Enhancement */
 .search-input {
   transition: all 0.3s ease;
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  border: none;
 }
 
 .search-input:focus {
-  border-color: rgba(59, 130, 246, 0.5);
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
 }
 

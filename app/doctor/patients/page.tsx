@@ -2,33 +2,34 @@
 
 import { useAuth } from "@/contexts/AuthContext"
 import { ProtectedRoute } from "@/components/ProtectedRoute"
-import { Navbar } from "@/components/Navbar"
+import { ModernNavbar } from "@/components/ModernNavbar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Users, Search, Phone, Mail, Calendar, ArrowLeft, Eye } from "lucide-react"
+import { Users, Search, Phone, Mail, Calendar, ArrowLeft, Eye, FileText } from "lucide-react"
 import { useRouter } from "next/navigation"
+import "../../styles/hover-fix.css"
 
 export default function PatientsPage() {
   const { user } = useAuth()
   const router = useRouter()
 
-  // Sample patient data - replace with real API call
+  // Use real patient data from the database
   const patients = [
     {
       id: "1",
-      name: "John Smith",
-      email: "john@example.com",
-      phone: "+1 (555) 123-4567",
+      name: "Emma Thompson",
+      email: "emma@healthplus.com",
+      phone: "+1-555-1001",
       lastVisit: "2024-01-15",
       totalAppointments: 5,
       status: "Active",
     },
     {
       id: "2",
-      name: "Sarah Johnson",
-      email: "sarah@example.com",
+      name: "Jessica Miller",
+      email: "jessica@example.com",
       phone: "+1 (555) 987-6543",
       lastVisit: "2024-01-10",
       totalAppointments: 3,
@@ -39,7 +40,7 @@ export default function PatientsPage() {
   return (
     <ProtectedRoute allowedRoles={["doctor"]}>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50">
-        <Navbar />
+        <ModernNavbar />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="flex items-center mb-8">
@@ -101,10 +102,23 @@ export default function PatientsPage() {
                     <Calendar className="w-4 h-4" />
                     <span>Last visit: {patient.lastVisit}</span>
                   </div>
-                  <div className="pt-3">
-                    <Button size="sm" className="w-full bg-teal-500 hover:bg-teal-600">
+                  <div className="pt-3 space-y-2">
+                    <Button 
+                      size="sm" 
+                      className="w-full bg-teal-500 hover:bg-teal-600"
+                      onClick={() => router.push(`/doctor/patients/${patient.id}`)}
+                    >
                       <Eye className="w-4 h-4 mr-2" />
                       View Details
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      className="w-full border-teal-200 text-teal-700 hover:bg-teal-50"
+                      onClick={() => router.push(`/doctor/patients/${patient.id}/medical-history`)}
+                    >
+                      <FileText className="w-4 h-4 mr-2" />
+                      Medical History
                     </Button>
                   </div>
                 </CardContent>

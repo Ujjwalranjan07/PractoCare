@@ -171,7 +171,7 @@ export default function CallConsultationPage() {
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {filteredDoctors.map((doctor) => (
-                  <Card key={doctor.id} className="hover:shadow-lg transition-shadow border border-purple-100 bg-gradient-to-br from-white to-purple-50">
+                  <Card key={doctor.id} className="hover:shadow-lg transition-shadow">
                     <CardContent className="p-6">
                       <div className="text-center">
                         <img

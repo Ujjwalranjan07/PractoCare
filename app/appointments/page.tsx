@@ -37,6 +37,7 @@ import {
 import { useToast } from "@/hooks/use-toast"
 import { motion, AnimatePresence } from "framer-motion"
 import { PatientPrescriptions } from "@/components/PatientPrescriptions"
+import ReviewForm from "@/components/ReviewForm"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { format } from "date-fns"
 import jsPDF from "jspdf"
@@ -507,7 +508,7 @@ export default function AppointmentsPage() {
                                       <div>
                                         <CardTitle className="text-xl font-bold flex items-center gap-2">
                                           <Stethoscope className="w-5 h-5 text-blue-600" />
-                                          Dr. {appointment.doctorName}
+                                          {appointment.doctorName.startsWith('Dr.') ? appointment.doctorName : `Dr. ${appointment.doctorName}`}
                                         </CardTitle>
                                         <CardDescription className="text-gray-600 mt-1">
                                           {appointment.specialization} • {appointment.hospitalName}
@@ -592,6 +593,16 @@ export default function AppointmentsPage() {
                                         </div>
                                       </div>
                                     </div>
+
+                                    {appointment.status === "completed" && (
+                                      <div className="mt-6">
+                                        <ReviewForm 
+                                          appointment={appointment} 
+                                          patientId={user?.id || ''} 
+                                          onReviewSubmitted={loadAppointments}
+                                        />
+                                      </div>
+                                    )}
 
                                     <div className="flex flex-wrap gap-3 mt-4">
                                       {(appointment.status === "confirmed" || appointment.status === "upcoming") && (
@@ -841,7 +852,7 @@ export default function AppointmentsPage() {
                             <X className="h-4 w-4" />
                           </Button>
                         </div>
-                        <DialogDescription className="text-gray-800">
+                        <DialogDescription className="text-gray-600">
                           Official medical prescription document
                         </DialogDescription>
                       </DialogHeader>
@@ -871,7 +882,7 @@ export default function AppointmentsPage() {
                               <div className="bg-gradient-to-r from-blue-50 to-white p-3 rounded-lg border border-blue-100 flex-1">
                                 <h3 className="text-lg font-medium text-gray-800 mb-1 flex items-center">
                                   <User className="w-4 h-4 mr-2 text-blue-600" />
-                                  Dr. {selectedPrescription.doctorName}
+                                  {selectedPrescription.doctorName.startsWith('Dr.') ? selectedPrescription.doctorName : `Dr. ${selectedPrescription.doctorName}`}
                                 </h3>
                                 <div className="flex flex-wrap gap-3 text-sm text-gray-600">
                                   <div className="flex items-center">
@@ -902,12 +913,12 @@ export default function AppointmentsPage() {
                               </h4>
                               <div className="bg-gradient-to-r from-blue-50 to-white rounded-lg p-4 border border-blue-100 shadow-sm">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                  <p className="text-gray-900 flex items-center">
-                                    <span className="font-medium mr-2 text-gray-900">Name:</span>
+                                  <p className="text-gray-700 flex items-center">
+                                    <span className="font-medium mr-2 text-gray-800">Name:</span>
                                     <span className="bg-white px-2 py-1 rounded border border-gray-100 flex-1">{selectedPrescription.patientName}</span>
                                   </p>
-                                  <p className="text-gray-900 flex items-center">
-                                    <span className="font-medium mr-2 text-gray-900">Date:</span>
+                                  <p className="text-gray-700 flex items-center">
+                                    <span className="font-medium mr-2 text-gray-800">Date:</span>
                                     <span className="bg-white px-2 py-1 rounded border border-gray-100 flex-1">
                                       {(() => {
                                         try {
@@ -1001,13 +1012,31 @@ export default function AppointmentsPage() {
                                   });
 
                                   const prescriptionElement = prescriptionRef.current;
+                                  
+                                  // Enhanced html2canvas configuration for better compatibility
                                   const canvas = await html2canvas(prescriptionElement, {
-                                    scale: 2,
-                                    logging: false,
+                                    scale: 2, // Higher scale for better quality
                                     backgroundColor: "#ffffff", // White background
+                                    useCORS: true, // Enable CORS for images
+                                    allowTaint: true, // Allow tainted canvas
+                                    scrollX: 0,
+                                    scrollY: 0,
+                                    logging: false, // Disable logging for production
+                                    imageTimeout: 0, // No timeout for images
+                                    onclone: (clonedDoc) => {
+                                      // Ensure all images are loaded in the cloned document
+                                      const images = clonedDoc.getElementsByTagName('img');
+                                      for (let i = 0; i < images.length; i++) {
+                                        images[i].crossOrigin = 'anonymous';
+                                      }
+                                      return clonedDoc;
+                                    }
                                   });
 
-                                  const imgData = canvas.toDataURL('image/png');
+                                  // Use a more reliable image format with better quality
+                                  const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                                  
+                                  // Create PDF with proper configuration
                                   const pdf = new jsPDF({
                                     orientation: 'portrait',
                                     unit: 'mm',
@@ -1017,8 +1046,12 @@ export default function AppointmentsPage() {
                                   const imgWidth = 210; // A4 width in mm
                                   const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-                                  pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-                                  pdf.save(`Prescription_${selectedPrescription.id}.pdf`);
+                                  // Add the image to the PDF
+                                  pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+                                  
+                                  // Force download with a unique filename
+                                  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                                  pdf.save(`Prescription_${selectedPrescription.id}_${timestamp}.pdf`);
 
                                   toast({
                                     title: "Success",
@@ -1033,7 +1066,8 @@ export default function AppointmentsPage() {
                                   });
                                 }
                               }}
-                              className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-8 py-3 rounded-full shadow-md transition-all duration-300 hover:shadow-lg flex items-center justify-center gap-2 w-full sm:w-auto"
+                              className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-8 py-3 rounded-full shadow-md hover:shadow-lg flex items-center justify-center gap-2 w-full sm:w-auto transition-colors"
+                              type="button"
                               size="lg"
                             >
                               <Download className="w-5 h-5" />

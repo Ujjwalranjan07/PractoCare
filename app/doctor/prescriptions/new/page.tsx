@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 import { ProtectedRoute } from "@/components/ProtectedRoute"
-import { Navbar } from "@/components/Navbar"
+import { ModernNavbar } from "@/components/ModernNavbar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -16,6 +16,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { appointmentsAPI, type Appointment } from "@/lib/api"
 import { prescriptionsAPI, type Prescription, type Medicine } from "@/lib/prescriptions"
 import { medicineCategories } from "@/lib/medicines"
+import "../../../styles/hover-fix.css"
 
 export default function NewPrescriptionPage() {
   const { user } = useAuth()
@@ -162,7 +163,7 @@ export default function NewPrescriptionPage() {
   return (
     <ProtectedRoute allowedRoles={["doctor"]}>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-        <Navbar />
+        <ModernNavbar />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           {/* Header */}

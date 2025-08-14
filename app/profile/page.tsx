@@ -4,7 +4,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 import { ProtectedRoute } from "@/components/ProtectedRoute"
-import { Navbar } from "@/components/Navbar"
+import { ModernNavbar } from "@/components/ModernNavbar"
 import { PatientPrescriptions } from "@/components/PatientPrescriptions"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -99,7 +99,7 @@ export default function ProfilePage() {
   return (
     <ProtectedRoute allowedRoles={["patient"]}>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-100">
-        <Navbar />
+        <ModernNavbar />
 
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5">
@@ -350,6 +350,16 @@ export default function ProfilePage() {
               </Card>
             </motion.div>
 
+            {/* Patient Prescriptions - Below profile card */}
+            <motion.div
+              className="xl:col-span-2 mt-8"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
+              <PatientPrescriptions />
+            </motion.div>
+
             {/* Sidebar */}
             <div className="space-y-6">
               {/* Stats Card */}
@@ -459,16 +469,6 @@ export default function ProfilePage() {
                     </motion.div>
                   </CardContent>
                 </Card>
-
-                {/* Patient Prescriptions */}
-                <motion.div
-                  className="mt-6"
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.6 }}
-                >
-                  <PatientPrescriptions />
-                </motion.div>
               </motion.div>
             </div>
           </div>

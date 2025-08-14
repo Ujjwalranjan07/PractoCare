@@ -1,0 +1,15 @@
+/* Fix for Jessica Miller's appointment card buttons in desktop mode */
+.appointment-card button {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  z-index: 30;
+  position: relative;
+}
+
+/* Ensure buttons are visible and clickable in all screen sizes */
+@media (min-width: 640px) {
+  .appointment-card button {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+  }
+}

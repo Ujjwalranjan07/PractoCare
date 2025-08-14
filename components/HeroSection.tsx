@@ -129,7 +129,7 @@ export function HeroSection() {
               <CardContent className="text-center relative z-10 pb-6 sm:pb-8">
                 <Link href="/find-doctors">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button className="w-full bg-blue-100 hover:bg-blue-200 text-blue-700 border border-blue-200 hover:border-blue-300 group-hover:bg-gradient-to-r group-hover:from-blue-500 group-hover:to-cyan-500 group-hover:text-white group-hover:border-transparent transition-all duration-300 py-3 sm:py-4 text-base font-semibold shadow-lg hover:shadow-xl backdrop-blur-sm">
+                    <Button className="w-full bg-blue-100 hover:bg-blue-200 text-blue-700 border border-blue-200 hover:border-blue-300 group-hover:bg-gradient-to-r group-hover:from-blue-500 group-hover:to-cyan-500 group-hover:text-white group-hover:border-transparent transition-colors duration-300 py-3 sm:py-4 text-base font-semibold shadow-lg hover:shadow-xl">
                       Explore Doctors
                       <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
                     </Button>
@@ -168,7 +168,7 @@ export function HeroSection() {
               <CardContent className="text-center relative z-10 pb-6 sm:pb-8">
                 <Link href="/consultations/video">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button className="w-full bg-emerald-100 hover:bg-emerald-200 text-emerald-700 border border-emerald-200 hover:border-emerald-300 group-hover:bg-gradient-to-r group-hover:from-emerald-500 group-hover:to-teal-500 group-hover:text-white group-hover:border-transparent transition-all duration-300 py-3 sm:py-4 text-base font-semibold shadow-lg hover:shadow-xl backdrop-blur-sm">
+                    <Button className="w-full bg-emerald-100 hover:bg-emerald-200 text-emerald-700 border border-emerald-200 hover:border-emerald-300 group-hover:bg-gradient-to-r group-hover:from-emerald-500 group-hover:to-teal-500 group-hover:text-white group-hover:border-transparent transition-colors duration-300 py-3 sm:py-4 text-base font-semibold shadow-lg hover:shadow-xl">
                       Start Video Call
                       <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
                     </Button>
@@ -208,7 +208,7 @@ export function HeroSection() {
               <CardContent className="text-center relative z-10 pb-6 sm:pb-8">
                 <Link href="/consultations/call">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button className="w-full bg-purple-100 hover:bg-purple-200 text-purple-700 border border-purple-200 hover:border-purple-300 group-hover:bg-gradient-to-r group-hover:from-purple-500 group-hover:to-pink-500 group-hover:text-white group-hover:border-transparent transition-all duration-300 py-3 sm:py-4 text-base font-semibold shadow-lg hover:shadow-xl backdrop-blur-sm">
+                    <Button className="w-full bg-purple-100 hover:bg-purple-200 text-purple-700 border border-purple-200 hover:border-purple-300 group-hover:bg-gradient-to-r group-hover:from-purple-500 group-hover:to-pink-500 group-hover:text-white group-hover:border-transparent transition-colors duration-300 py-3 sm:py-4 text-base font-semibold shadow-lg hover:shadow-xl">
                       Make a Call
                       <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
                     </Button>

@@ -88,22 +88,66 @@ export function PatientPrescriptions({ prescriptions: propPrescriptions, onViewD
   }
 
   const handleDownloadPrescription = async () => {
-    if (!selectedPrescription || !prescriptionRef.current) return
+    console.log("Download started", selectedPrescription);
+    console.log("Prescription ref exists:", !!prescriptionRef.current);
+    console.log("Prescription ref details:", prescriptionRef.current ? "Has content" : "Empty ref");
+    
+    if (!selectedPrescription) {
+      console.error("Missing prescription");
+      toast({
+        title: "Error",
+        description: "Unable to generate prescription: No prescription selected.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (!prescriptionRef.current) {
+      console.error("Missing ref");
+      toast({
+        title: "Error",
+        description: "Unable to generate prescription: Reference element not found.",
+        variant: "destructive"
+      });
+      return;
+    }
 
     try {
+      console.log("Prescription element found, proceeding with PDF generation");
       toast({
         title: "Preparing PDF",
         description: "Please wait while we generate your prescription...",
-      })
+      });
 
-      const prescriptionElement = prescriptionRef.current
+      // Add a small delay to ensure the prescription template is fully rendered
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const prescriptionElement = prescriptionRef.current;
+      
+      // Enhanced html2canvas configuration for better compatibility
       const canvas = await html2canvas(prescriptionElement, {
-        scale: 2,
-        logging: false,
+        scale: 2, // Higher scale for better quality
         backgroundColor: "#ffffff", // White background
+        useCORS: true, // Enable CORS for images
+        allowTaint: true, // Allow tainted canvas
+        scrollX: 0,
+        scrollY: 0,
+        logging: false, // Disable logging for production
+        imageTimeout: 0, // No timeout for images
+        onclone: (clonedDoc) => {
+          // Ensure all images are loaded in the cloned document
+          const images = clonedDoc.getElementsByTagName('img');
+          for (let i = 0; i < images.length; i++) {
+            images[i].crossOrigin = 'anonymous';
+          }
+          return clonedDoc;
+        }
       })
 
-      const imgData = canvas.toDataURL('image/png')
+      // Use a more reliable image format with better quality
+      const imgData = canvas.toDataURL('image/jpeg', 1.0)
+      
+      // Create PDF with proper configuration
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
@@ -113,8 +157,12 @@ export function PatientPrescriptions({ prescriptions: propPrescriptions, onViewD
       const imgWidth = 210 // A4 width in mm
       const imgHeight = (canvas.height * imgWidth) / canvas.width
 
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight)
-      pdf.save(`Prescription_${selectedPrescription.id}.pdf`)
+      // Add the image to the PDF
+      pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight)
+      
+      // Force download with a unique filename
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      pdf.save(`Prescription_${selectedPrescription.id}_${timestamp}.pdf`)
 
       toast({
         title: "Success",
@@ -131,96 +179,117 @@ export function PatientPrescriptions({ prescriptions: propPrescriptions, onViewD
   }
 
   return (
-    <Card className="border-0 bg-gradient-to-br from-white/90 to-blue-50/90 backdrop-blur-sm shadow-lg overflow-hidden">
-      <CardHeader className="border-b border-blue-100">
-        <div className="flex items-center justify-between">
+    <Card className="border border-blue-100 bg-gradient-to-br from-white to-blue-50 shadow-xl overflow-hidden w-full">
+      <CardHeader className="border-b border-blue-100 pb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div>
-            <CardTitle className="text-xl font-bold text-gray-800 flex items-center">
-              <Pill className="w-5 h-5 mr-2 text-blue-600" />
+            <CardTitle className="text-2xl font-bold text-gray-800 flex items-center">
+              <Pill className="w-6 h-6 mr-3 text-blue-600" />
               My Prescriptions
             </CardTitle>
-            <CardDescription className="text-gray-600">
+            <CardDescription className="text-gray-600 mt-2 text-lg">
               View and manage your medical prescriptions
             </CardDescription>
           </div>
-          <div className="flex items-center gap-3">
-            <Badge className="bg-blue-100 text-blue-700 border-blue-200">
+          <div className="flex items-center gap-4 w-full sm:w-auto">
+            <Badge className="bg-blue-100 text-blue-700 border-blue-200 px-4 py-2 text-base">
               {prescriptions.length} Total
             </Badge>
-            <Button 
+            <Button
               variant="outline" 
-              size="sm" 
-              className="border-blue-200 text-blue-700 hover:bg-blue-50 bg-white/80 backdrop-blur-sm shadow-md"
+              size="default" 
+              className="border-blue-200 text-blue-700 hover:bg-blue-700 hover:text-white bg-white shadow-md w-full sm:w-auto px-6 py-5 transition-colors"
               onClick={handleNewPrescription}
             >
-              <Plus className="w-4 h-4 mr-2" />
-              New Prescription
+              <Plus className="w-5 h-5 mr-2" /> New Prescription
             </Button>
           </div>
         </div>
       </CardHeader>
 
-      <CardContent className="p-4 sm:p-6">
+      <CardContent className="p-8 sm:p-10">
         {loading ? (
-          <div className="flex justify-center items-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mb-6"></div>
+            <p className="text-gray-600 text-lg">Loading prescriptions...</p>
           </div>
         ) : prescriptions.length === 0 ? (
-          <div className="text-center py-8">
-            <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-            <h3 className="text-lg font-medium text-gray-700 mb-1">No Prescriptions Found</h3>
-            <p className="text-gray-600 max-w-md mx-auto">
+          <div className="text-center py-16">
+            <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-5" />
+            <h3 className="text-xl font-medium text-gray-700 mb-3">No Prescriptions Found</h3>
+            <p className="text-gray-600 max-w-md mx-auto text-lg">
               You don't have any prescriptions yet. They will appear here after your doctor creates them.
             </p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="grid gap-8 grid-cols-1">
             {prescriptions.map((prescription) => (
               <motion.div
                 key={prescription.id}
-                className="bg-white/80 rounded-lg p-4 border border-blue-100 hover:border-blue-300 transition-all duration-300"
+                className="bg-white rounded-lg p-8 border border-blue-100 hover:border-blue-300 transition-colors duration-300 h-full flex flex-col shadow-lg overflow-hidden"
                 whileHover={{ scale: 1.01 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex flex-col gap-8">
                   <div>
-                    <h3 className="text-gray-800 font-medium mb-1 flex items-center">
-                      <span className="mr-2">Dr. {prescription.doctorName}</span>
-                      <Badge className="bg-green-100 text-green-700 border-green-200">
+                    <h3 className="text-gray-800 font-medium text-xl mb-3 flex items-center flex-wrap">
+                      <span className="mr-2 truncate">{prescription.doctorName.startsWith('Dr.') ? prescription.doctorName : `Dr. ${prescription.doctorName}`}</span>
+                      <Badge className="bg-green-100 text-green-700 border-green-200 px-3 py-1 whitespace-nowrap">
                         {prescription.medicines.length} Medicines
                       </Badge>
                     </h3>
                     <div className="flex flex-wrap gap-3 text-sm text-gray-600">
                       <div className="flex items-center">
-                        <Calendar className="w-4 h-4 mr-1 text-blue-600" />
-                        {formatDate(prescription.date)}
+                        <Calendar className="w-4 h-4 mr-1 text-blue-600 flex-shrink-0" />
+                        <span className="truncate">{formatDate(prescription.date)}</span>
                       </div>
                     </div>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-4 flex-wrap sm:flex-nowrap">
                     <Button
                       variant="outline"
-                      size="sm"
-                      className="border-blue-200 text-blue-700 hover:bg-blue-50 bg-white/80 backdrop-blur-sm shadow-md"
+                      size="default"
+                      className="border-blue-200 text-blue-700 hover:bg-blue-700 hover:text-white bg-white shadow-md hover:shadow-lg w-full sm:w-auto min-w-[140px] py-5 transition-colors"
                       onClick={() => handleViewDetails(prescription)}
+                      type="button"
                     >
-                      <FileText className="w-4 h-4 mr-2" />
-                      View Details
+                      <FileText className="w-5 h-5 mr-2 flex-shrink-0" />
+                      <span className="truncate">View Details</span>
                     </Button>
                     <Button
                       variant="outline"
-                      size="sm"
-                      className="border-emerald-200 text-emerald-700 hover:bg-emerald-50 bg-white/80 backdrop-blur-sm shadow-md"
+                      size="default"
+                      className="border-emerald-200 text-emerald-700 hover:bg-emerald-700 hover:text-white bg-white shadow-md hover:shadow-lg w-full sm:w-auto min-w-[140px] py-5 transition-colors"
                       onClick={(e) => {
                         e.stopPropagation();
+                        // First set the selected prescription and open the dialog
                         setSelectedPrescription(prescription);
-                        setTimeout(handleDownloadPrescription, 100);
+                        setIsDetailsOpen(true);
+                        
+                        // Force a repaint and ensure dialog is fully rendered before downloading
+                        requestAnimationFrame(() => {
+                          requestAnimationFrame(() => {
+                            setTimeout(() => {
+                              if (prescriptionRef.current) {
+                                handleDownloadPrescription();
+                              } else {
+                                console.error("Prescription ref not available after delay");
+                                toast({
+                                  title: "Error",
+                                  description: "Unable to generate prescription. Please try using the Download button inside the details view.",
+                                  variant: "destructive"
+                                });
+                              }
+                            }, 3000);
+                          });
+                        });
                       }}
+                      type="button"
                     >
-                      <Download className="w-4 h-4 mr-2" />
-                      Download
+                      <Download className="w-5 h-5 mr-2 flex-shrink-0" />
+                      <span className="truncate">Download</span>
                     </Button>
                   </div>
                 </div>
@@ -252,30 +321,57 @@ export function PatientPrescriptions({ prescriptions: propPrescriptions, onViewD
               </DialogDescription>
             </DialogHeader>
             
-            <div className="p-6" ref={prescriptionRef}>
+            <div className="p-6">
               {selectedPrescription && (
-                <PrescriptionTemplate 
-                  prescription={selectedPrescription}
-                  hospitalName="HealthPlus Medical Center"
-                  hospitalAddress="123 Healthcare Avenue, Medical District"
-                  hospitalContact="+1 (555) 123-4567 | info@healthplus.com"
-                  doctorQualifications="MD, MBBS"
-                  doctorRegistrationNumber="REG12345"
-                  doctorDepartment="General Medicine"
-                  patientAge="35"
-                  patientGender="Female"
-                  patientId={selectedPrescription.patientId || "PAT-" + Math.floor(Math.random() * 100000)}
-                />
+                <div 
+                  ref={prescriptionRef}
+                  onLoad={() => console.log("Prescription ref loaded")}
+                >
+                  <PrescriptionTemplate 
+                    prescription={selectedPrescription}
+                    hospitalName="HealthPlus Medical Center"
+                    hospitalAddress="123 Healthcare Avenue, Medical District"
+                    hospitalContact="+1 (555) 123-4567 | info@healthplus.com"
+                    doctorQualifications="MD, MBBS"
+                    doctorRegistrationNumber="REG12345"
+                    doctorDepartment="General Medicine"
+                    patientAge="35"
+                    patientGender="Female"
+                    patientId={selectedPrescription.patientId || "PAT-" + Math.floor(Math.random() * 100000)}
+                  />
+                </div>
               )}
             </div>
             
             {/* Download Button */}
             <div className="flex justify-end p-6 pt-0">
               <Button 
-                onClick={handleDownloadPrescription}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
+                onClick={() => {
+                  // Add a longer delay to ensure the dialog is fully rendered
+                  if (!prescriptionRef.current) {
+                    console.error("Prescription ref not available");
+                    toast({
+                      title: "Error",
+                      description: "Please wait for the prescription to load completely and try again.",
+                      variant: "destructive"
+                    });
+                    return;
+                  }
+                  
+                  // Force a repaint before downloading
+                  requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                      setTimeout(() => {
+                        handleDownloadPrescription();
+                      }, 1500);
+                    });
+                  });
+                }}
+                className="bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-colors"
+                size="lg"
+                type="button"
               >
-                <Download className="w-4 h-4 mr-2" />
+                <Download className="w-5 h-5 mr-2" />
                 Download PDF
               </Button>
             </div>

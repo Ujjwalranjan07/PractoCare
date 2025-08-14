@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 import { ProtectedRoute } from "@/components/ProtectedRoute"
-import { Navbar } from "@/components/Navbar"
+import { ModernNavbar } from "@/components/ModernNavbar"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { appointmentsAPI, type Appointment } from "@/lib/api"
 import {
@@ -37,6 +37,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useRouter } from "next/navigation"
 import "../../styles/doctor-dashboard.css"
+import "../../styles/jessica-fix.css"
+import "../../styles/hover-fix.css"
 
 export default function DoctorDashboard() {
   const { user } = useAuth()
@@ -221,7 +223,7 @@ export default function DoctorDashboard() {
     showActions = true,
   }: { appointment: Appointment; index: number; showActions?: boolean }) => (
     <div
-      className="group p-4 sm:p-6 bg-white rounded-xl border border-blue-100 hover:border-blue-300 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+      className="group p-4 sm:p-6 bg-white rounded-xl border border-blue-100 hover:border-blue-300 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 appointment-card"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 space-y-3 sm:space-y-0">
@@ -279,13 +281,14 @@ export default function DoctorDashboard() {
       </div>
 
       {showActions && (
-        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-          {appointment.status === "pending" && (
+          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-4 appointment-actions">
+            {appointment.status === "pending" && (
             <>
               <Button
                 size="sm"
                 onClick={() => handleStatusUpdate(appointment.id, "confirmed")}
-                className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 text-xs sm:text-sm"
+                className="flex-1 border-gray-200 text-gray-700 hover:bg-gray-50 bg-transparent text-xs sm:text-sm"
+                variant="outline"
               >
                 Confirm
               </Button>
@@ -293,7 +296,7 @@ export default function DoctorDashboard() {
                 size="sm"
                 variant="outline"
                 onClick={() => handleCancel(appointment.id)}
-                className="flex-1 border-red-500/30 text-red-300 hover:bg-red-500/10 hover:border-red-500/50 text-xs sm:text-sm"
+                className="flex-1 border-gray-200 text-gray-700 hover:bg-gray-50 bg-transparent text-xs sm:text-sm"
               >
                 Cancel
               </Button>
@@ -305,7 +308,8 @@ export default function DoctorDashboard() {
               <Button
                 size="sm"
                 onClick={() => handleStatusUpdate(appointment.id, "completed")}
-                className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 text-xs sm:text-sm"
+                className="flex-1 border-gray-200 text-gray-700 hover:bg-gray-50 bg-transparent text-xs sm:text-sm mb-3 sm:mb-0"
+                variant="outline"
               >
                 Complete
               </Button>
@@ -315,7 +319,7 @@ export default function DoctorDashboard() {
                     size="sm"
                     variant="outline"
                     onClick={() => setSelectedAppointment(appointment)}
-                    className="border-blue-300 text-blue-700 hover:bg-blue-50 text-xs sm:text-sm"
+                    className="border-gray-200 text-gray-700 hover:bg-gray-50 bg-transparent text-xs sm:text-sm mb-3 sm:mb-0"
                   >
                     <Edit className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                     <span className="hidden sm:inline">Reschedule</span>
@@ -380,7 +384,7 @@ export default function DoctorDashboard() {
                 size="sm"
                 variant="outline"
                 onClick={() => handleCancel(appointment.id)}
-                className="border-red-300 text-red-700 hover:bg-red-50 sm:w-auto w-full"
+                className="border-gray-200 text-gray-700 hover:bg-gray-50 bg-transparent sm:w-auto w-full mb-3 sm:mb-0"
               >
                 <X className="w-3 h-3 sm:w-4 sm:h-4" />
               </Button>
@@ -394,7 +398,7 @@ export default function DoctorDashboard() {
   return (
     <ProtectedRoute allowedRoles={["doctor"]}>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-        <Navbar />
+        <ModernNavbar />
         <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8 dashboard-container">
           {/* Header Section */}
           <div className="mb-8 sm:mb-12 text-center">
@@ -445,6 +449,23 @@ export default function DoctorDashboard() {
               onClick={() => router.push("/doctor/appointments?filter=completed")}
             />
           </div>
+          
+          {/* Reviews Button */}
+          <div className="mb-8 sm:mb-12">
+            <Button 
+              variant="outline"
+              className="w-full border-gray-200 text-gray-700 hover:bg-gray-50 bg-transparent py-6"
+              onClick={() => router.push("/doctor/reviews")}
+            >
+              <div className="flex items-center justify-center space-x-3">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+                <span className="text-lg font-bold">View Patient Reviews</span>
+                <ChevronRight className="h-5 w-5" />
+              </div>
+            </Button>
+          </div>
 
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 sm:gap-8">
             {/* Today's Appointments */}
@@ -464,7 +485,7 @@ export default function DoctorDashboard() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="border-blue-300 text-blue-700 hover:bg-blue-50 bg-transparent text-xs sm:text-sm"
+                      className="border-gray-200 text-gray-700 hover:bg-gray-50 bg-transparent text-xs sm:text-sm"
                       onClick={loadAppointments}
                     >
                       <Bell className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
@@ -500,8 +521,9 @@ export default function DoctorDashboard() {
                           : "No appointments scheduled yet"}
                       </p>
                       <Button
+                        variant="outline"
                         onClick={() => router.push("/doctor/appointments")}
-                        className="bg-blue-500 hover:bg-blue-600 text-sm sm:text-base"
+                        className="w-full justify-start border-gray-200 text-gray-700 hover:bg-gray-50 bg-transparent text-xs sm:text-sm"
                       >
                         <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
                         View All Appointments
@@ -527,7 +549,8 @@ export default function DoctorDashboard() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <Button
-                    className="w-full justify-start bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 text-xs sm:text-sm"
+                    variant="outline"
+                    className="w-full justify-start border-gray-200 text-gray-700 hover:bg-gray-50 bg-transparent text-xs sm:text-sm"
                     onClick={() => router.push("/doctor/appointments")}
                   >
                     <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />

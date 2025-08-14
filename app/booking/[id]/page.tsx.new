@@ -99,12 +99,17 @@ export default function BookAppointmentPage() {
     }
   }, [params.id])
 
+  // Set default date to today
   useEffect(() => {
-    // Set default date to today
-    const today = new Date()
-    setSelectedDate(today.toISOString().split("T")[0])
-  }, [])
+    if (doctor) {
+      const dates = getAvailableDates()
+      if (dates.length > 0) {
+        setSelectedDate(dates[0].date)
+      }
+    }
+  }, [doctor, consultationType])
 
+  // Confetti and redirection after booking complete
   useEffect(() => {
     if (bookingComplete) {
       // Trigger confetti animation
@@ -202,99 +207,70 @@ export default function BookAppointmentPage() {
           display: date.toLocaleDateString("en-US", {
             weekday: "short",
             month: "short",
-            day: "numeric",
+            day: "numeric"
           }),
-          dayName,
+          isToday: i === 0
         })
       }
     }
     return dates
   }
 
-  const handleBookAppointment = async () => {
-    if (!doctor || !user || !selectedDate || !selectedTime) {
-      toast({
-        title: "Error",
-        description: "Please fill in all required fields",
-        variant: "destructive",
-      })
-      return
-    }
+  const getAvailableTimes = () => {
+    // Simulated time slots
+    return [
+      "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
+      "1:00 PM", "1:30 PM", "2:00 PM", "2:30 PM", "3:00 PM", "3:30 PM", "4:00 PM"
+    ]
+  }
+
+  const handleBookAppointment = () => {
     setShowPayment(true)
   }
 
   const handlePayment = async () => {
-    if (!doctor || !user || isProcessing) return
-
-    setIsProcessing(true)
-    setBookingStage(0)
-
     try {
-      // Animate through booking stages with proper error handling
+      setIsProcessing(true)
+      
+      // Simulate multi-stage booking process
       for (let i = 0; i < bookingStages.length; i++) {
         setBookingStage(i)
-
-        // Simulate different processing times for each stage
-        const delay = i === 0 ? 2000 : i === 1 ? 1500 : i === 2 ? 2500 : 1000
-        await new Promise((resolve) => setTimeout(resolve, delay))
-
-        // Add some realistic stage-specific logic
-        if (i === 0) {
-          // Checking availability - could add actual availability check here
-          console.log("Checking availability...")
-        } else if (i === 1) {
-          // Verifying connection - could add connection test here
-          console.log("Verifying connection...")
-        } else if (i === 2) {
-          // Processing payment - this is where the actual API call should happen
-          console.log("Processing payment...")
-        }
+        // Add delay to simulate processing
+        await new Promise(resolve => setTimeout(resolve, 1000))
       }
 
-      // Create the appointment after all stages complete
+      // Create appointment object
       const appointment = {
-        doctorId: doctor.id,
-        patientId: user.id,
-        doctorName: doctor.name,
-        patientName: user.name,
-        specialty: doctor.specialty,
+        id: Date.now().toString(),
+        doctorId: doctor?.id,
+        doctorName: doctor?.name,
+        doctorSpecialty: doctor?.specialty,
+        doctorImage: doctor?.image,
+        patientId: user?.id,
+        patientName: user?.name,
         date: selectedDate,
         time: selectedTime,
-        status: "confirmed" as const,
         consultationType,
         symptoms,
+        status: "confirmed",
         fee: getConsultationFee(),
+        createdAt: new Date().toISOString()
       }
 
-      try {
-        const result = await appointmentsAPI.create(appointment)
-        console.log("Appointment created successfully:", result)
-        setBookingComplete(true)
+      // Book appointment
+      await appointmentsAPI.create(appointment)
 
-        toast({
-          title: "Success",
-          description: `Your ${consultationType} appointment has been booked successfully! Redirecting to appointments page...`,
-        })
-        
-        // Automatically redirect to appointments page after 3 seconds
-        setTimeout(() => {
-          router.push("/appointments")
-        }, 3000)
-      } catch (error) {
-        console.error("Booking error:", error)
-        toast({
-          title: "Error",
-          description: "Failed to book appointment. Please try again.",
-          variant: "destructive",
-        })
-        // Reset states on error
-        setShowPayment(false)
-        setBookingStage(0)
-      } finally {
-        setIsProcessing(false)
-      }
+      // Show success message
+      toast({
+        title: "Success",
+        description: `Your appointment with Dr. ${doctor?.name} has been booked successfully!`,
+        variant: "default",
+      })
+
+      // Set booking complete
+      setBookingComplete(true)
     } catch (error) {
-      console.error("Payment processing error:", error)
+      // Show error message
       toast({
         title: "Error",
         description: "An error occurred during payment processing. Please try again.",
@@ -529,76 +505,17 @@ export default function BookAppointmentPage() {
                           <div className="flex items-center">
                             <DollarSign className="w-5 h-5 mr-3 text-white text-opacity-80" />
                             <span>
-                              {consultationType === "clinic"
-                                ? `Clinic visit: $${doctor.consultationFee}`
-                                : consultationType === "video"
-                                ? `Video consultation: $${doctor.videoConsultationFee}`
-                                : `Phone consultation: $${doctor.callConsultationFee || doctor.videoConsultationFee}`}
+                              Consultation Fee: ${consultationType === "clinic" ? doctor.consultationFee : 
+                                consultationType === "video" ? doctor.videoConsultationFee : 
+                                doctor.callConsultationFee || doctor.videoConsultationFee}
                             </span>
                           </div>
                         </div>
                       </div>
                     </div>
                     <CardContent className="p-6">
-                      <h4 className="font-semibold text-gray-900 mb-3">About Doctor</h4>
-                      <p className="text-gray-600 mb-6 text-sm">{doctor.about}</p>
-
-                      <h4 className="font-semibold text-gray-900 mb-3">Consultation Type</h4>
-                      <div className="grid grid-cols-3 gap-2 mb-6">
-                        <Button
-                          variant={consultationType === "clinic" ? "default" : "outline"}
-                          className={`flex items-center justify-center py-2 ${consultationType === "clinic" ? "bg-blue-600" : ""}`}
-                          onClick={() => setConsultationType("clinic")}
-                        >
-                          <Building className="w-4 h-4 mr-2" />
-                          <span className="text-xs">Clinic</span>
-                        </Button>
-                        <Button
-                          variant={consultationType === "video" ? "default" : "outline"}
-                          className={`flex items-center justify-center py-2 ${consultationType === "video" ? "bg-purple-600" : ""}`}
-                          onClick={() => setConsultationType("video")}
-                        >
-                          <Video className="w-4 h-4 mr-2" />
-                          <span className="text-xs">Video</span>
-                        </Button>
-                        <Button
-                          variant={consultationType === "call" ? "default" : "outline"}
-                          className={`flex items-center justify-center py-2 ${consultationType === "call" ? "bg-green-600" : ""}`}
-                          onClick={() => setConsultationType("call")}
-                        >
-                          <Phone className="w-4 h-4 mr-2" />
-                          <span className="text-xs">Call</span>
-                        </Button>
-                      </div>
-
-                      <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
-                        <div className="flex items-center mb-1">
-                          <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                          <p>Secure, private consultation</p>
-                        </div>
-                        <div className="flex items-center">
-                          <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                          <p>Cancel or reschedule anytime</p>
-                        </div>
-                        {consultationType === "video" && (
-                          <div className="flex items-center mt-1">
-                            <Wifi className="w-3.5 h-3.5 text-purple-500 mr-1" />
-                            <p className="text-sm text-gray-600">You will receive a video link before the appointment</p>
-                          </div>
-                        )}
-                        {consultationType === "call" && (
-                          <div className="flex items-center mt-1">
-                            <Phone className="w-3.5 h-3.5 text-green-500 mr-1" />
-                            <p className="text-sm text-gray-600">You will receive a call at your registered number</p>
-                          </div>
-                        )}
-                        {consultationType === "clinic" && (
-                          <div className="flex items-center mt-1">
-                            <MapPin className="w-3.5 h-3.5 text-orange-500 mr-1" />
-                            <p className="text-sm text-gray-600">{doctor.clinicAddress || "Clinic address will be shared"}</p>
-                          </div>
-                        )}
-                      </div>
+                      <h4 className="font-medium text-gray-900 mb-2">About {doctor.name}</h4>
+                      <p className="text-gray-600 text-sm mb-4">{doctor.about}</p>
                     </CardContent>
                   </Card>
                 </div>
@@ -607,33 +524,81 @@ export default function BookAppointmentPage() {
                 <div className="lg:col-span-2">
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-2xl font-bold">Book Your Appointment</CardTitle>
+                      <CardTitle>Book Your Appointment</CardTitle>
                       <CardDescription>
-                        Select your preferred date and time for the {consultationType} consultation
+                        Choose your preferred consultation type and time slot
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
+                      {/* Consultation Type */}
+                      <div>
+                        <Label className="text-base font-medium mb-2 block">Consultation Type</Label>
+                        <div className="grid grid-cols-3 gap-4">
+                          <Button
+                            type="button"
+                            variant={consultationType === "clinic" ? "default" : "outline"}
+                            className={`h-auto py-3 px-4 flex flex-col items-center ${consultationType === "clinic" ? "bg-blue-600" : ""}`}
+                            onClick={() => setConsultationType("clinic")}
+                          >
+                            <Building className="w-6 h-6 mb-1" />
+                            <span>Clinic</span>
+                          </Button>
+                          <Button
+                            type="button"
+                            variant={consultationType === "video" ? "default" : "outline"}
+                            className={`h-auto py-3 px-4 flex flex-col items-center ${consultationType === "video" ? "bg-purple-600" : ""}`}
+                            onClick={() => setConsultationType("video")}
+                          >
+                            <Video className="w-6 h-6 mb-1" />
+                            <span>Video</span>
+                          </Button>
+                          <Button
+                            type="button"
+                            variant={consultationType === "call" ? "default" : "outline"}
+                            className={`h-auto py-3 px-4 flex flex-col items-center ${consultationType === "call" ? "bg-green-600" : ""}`}
+                            onClick={() => setConsultationType("call")}
+                          >
+                            <Phone className="w-6 h-6 mb-1" />
+                            <span>Call</span>
+                          </Button>
+                        </div>
+                        <div className="mt-3 text-sm text-gray-500">
+                          <p className="flex items-center mb-2">
+                            <Shield className="w-4 h-4 mr-2 text-blue-500" />
+                            All consultations are secure and follow medical privacy guidelines
+                          </p>
+                          {consultationType === "video" && (
+                            <p className="pl-6 mb-1">You'll receive a secure video link before your appointment</p>
+                          )}
+                          {consultationType === "call" && (
+                            <p className="pl-6 mb-1">You'll receive a call from the doctor at your scheduled time</p>
+                          )}
+                          {consultationType === "clinic" && (
+                            <p className="pl-6 mb-1 flex items-start">
+                              <MapPin className="w-4 h-4 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                              <span>{doctor.hospital || "Doctor's clinic"}</span>
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
                       {/* Date Selection */}
                       <div>
                         <Label htmlFor="date" className="text-base font-medium mb-2 block">
                           Select Date
                         </Label>
-                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                          {getAvailableDates().map((dateOption) => (
+                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                          {getAvailableDates().map((dateObj) => (
                             <Button
-                              key={dateOption.date}
+                              key={dateObj.date}
                               type="button"
-                              variant={selectedDate === dateOption.date ? "default" : "outline"}
-                              className={`flex flex-col items-center justify-center h-20 ${selectedDate === dateOption.date ? "bg-blue-600" : ""}`}
-                              onClick={() => setSelectedDate(dateOption.date)}
+                              variant={selectedDate === dateObj.date ? "default" : "outline"}
+                              className={`h-auto py-3 flex flex-col ${selectedDate === dateObj.date ? "bg-blue-600" : ""}`}
+                              onClick={() => setSelectedDate(dateObj.date)}
                             >
-                              <span className="text-xs opacity-80">{dateOption.dayName.substring(0, 3)}</span>
-                              <span className="text-lg font-semibold">
-                                {new Date(dateOption.date).getDate()}
-                              </span>
-                              <span className="text-xs opacity-80">
-                                {new Date(dateOption.date).toLocaleDateString("en-US", { month: "short" })}
-                              </span>
+                              <span className="text-xs font-normal">{dateObj.display.split(" ")[0]}</span>
+                              <span className="text-lg font-medium">{dateObj.display.split(" ")[1]} {dateObj.display.split(" ")[2]}</span>
+                              {dateObj.isToday && <span className="text-xs mt-1 bg-green-100 text-green-800 px-2 py-0.5 rounded-full">Today</span>}
                             </Button>
                           ))}
                         </div>
@@ -644,8 +609,8 @@ export default function BookAppointmentPage() {
                         <Label htmlFor="time" className="text-base font-medium mb-2 block">
                           Select Time
                         </Label>
-                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                          {doctor?.timeSlots?.map((time) => (
+                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                          {getAvailableTimes().map((time) => (
                             <Button
                               key={time}
                               type="button"
