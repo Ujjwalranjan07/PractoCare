@@ -315,10 +315,26 @@ button.from-blue-700:hover {
 /* Preserve on/off toggle switch styling */
 [data-state=checked] {
   background-color: #3b82f6 !important;
+  border: 2px solid #2563eb !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3) !important;
 }
 
 [data-state=checked]:hover {
   background-color: #3b82f6 !important;
+  border: 2px solid #2563eb !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.5) !important;
+}
+
+[data-state=unchecked] {
+  background-color: #93c5fd !important; /* blue-300 */
+  border: 2px solid #60a5fa !important; /* blue-400 */
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3) !important; /* blue-500 with opacity */
+}
+
+[data-state=unchecked]:hover {
+  background-color: #93c5fd !important; /* blue-300 */
+  border: 2px solid #60a5fa !important; /* blue-400 */
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5) !important; /* blue-500 with opacity */
 }
 
 /* Ensure blue buttons maintain their blue background */

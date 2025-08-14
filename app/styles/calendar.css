@@ -1,10 +1,17 @@
 /* React Big Calendar Light Theme Overrides */
-.rbc-calendar {
+.rbc-calendar, .calendar-container {
   font-family: inherit;
   color: #1e293b; /* Dark text for light background */
   height: 100%; /* Ensure calendar takes full height of its container */
   display: flex;
   flex-direction: column;
+}
+
+/* Ensure event text is always white regardless of theme */
+.rbc-event, .rbc-event-content {
+  color: white !important;
+  font-weight: 800 !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
 }
 
 .rbc-header {
@@ -53,14 +60,14 @@
 /* --- ENHANCED EVENT STYLING --- */
 .rbc-event {
   background-color: var(--primary-blue, #3b82f6); /* Default event background (blue) - will be overridden by eventPropGetter */
-  border: none;
+  border: 4px solid #000000; /* Solid black border for maximum contrast */
   color: white;
   border-radius: var(--radius-md, 0.5rem); /* More rounded corners */
   padding: 20px 25px; /* Increased padding for bigger events */
   font-size: 1.5rem; /* Even larger font size for main text */
   cursor: grab;
   min-height: 100px; /* Increased minimum height for events */
-  box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.1)); /* Softer shadow for light theme */
+  box-shadow: var(--shadow-xl, 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4)); /* Much stronger shadow for better visibility */
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
@@ -69,11 +76,17 @@
   overflow: hidden; /* Hide overflowing text */
   text-overflow: ellipsis; /* Add ellipsis for overflow */
   white-space: normal; /* Allow text to wrap */
+  font-weight: 800; /* Extra bold text for better visibility */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8); /* Stronger text shadow for better readability */
+  letter-spacing: 0.5px; /* Slightly increased letter spacing for better readability */
 }
 
 .rbc-event:hover {
-  transform: translateY(-4px); /* Slight lift on hover */
-  box-shadow: var(--shadow-lg, 0 8px 16px rgba(0, 0, 0, 0.15));
+  transform: translateY(-6px); /* More pronounced lift on hover */
+  box-shadow: var(--shadow-2xl, 0 25px 50px -12px rgba(0, 0, 0, 0.7)); /* Much stronger shadow on hover */
+  border-color: #ffffff; /* White border on hover for maximum contrast */
+  filter: brightness(1.2) contrast(1.1); /* Increase brightness and contrast on hover */
+  z-index: 10; /* Ensure hovered events appear above others */
 }
 
 .rbc-event.rbc-selected {

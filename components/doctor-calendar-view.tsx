@@ -247,9 +247,9 @@ export default function DoctorCalendarView({ appointments, onReschedule, onUpdat
     ({ event }: { event: any }) => {
       const appointment: Appointment = event.resource
       return (
-        <div className="relative h-full w-full p-1 text-white overflow-hidden group">
-          <div className="font-bold text-xl truncate">{event.title}</div> {/* Even larger patient name */}
-          <div className="text-base truncate">
+        <div className="relative h-full w-full p-3 text-white overflow-hidden group">
+          <div className="font-extrabold text-2xl truncate drop-shadow-xl">{event.title}</div> {/* Larger patient name with extra strong shadow */}
+          <div className="text-lg truncate font-bold drop-shadow-xl tracking-wide">
             {format(event.start, "hh:mm a")} - {format(event.end, "hh:mm a")}
           </div>
           <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -380,28 +380,36 @@ export default function DoctorCalendarView({ appointments, onReschedule, onUpdat
         components={{
           event: EventComponent,
         }}
-        className="text-white"
+        className="calendar-container"
         eventPropGetter={(event) => {
           const appointment = event.resource as Appointment
-          let backgroundColor = "#3B82F6" // Default blue, will be overridden
+          // Using even more saturated colors for maximum contrast
+          let backgroundColor = "#1E40AF" // Very dark blue default for maximum contrast
+          let borderColor = "#000000" // Black border for maximum contrast
+          
           switch (appointment.status) {
             case "confirmed":
-              backgroundColor = "#10B981" // Green for initial confirmed appointments
+              backgroundColor = "#047857" // Very dark green for maximum contrast
+              borderColor = "#064E3B" // Almost black green border
               break
             case "pending":
-              backgroundColor = "#F59E0B" // Yellow for rescheduled (pending) appointments
+              backgroundColor = "#B45309" // Very dark amber for maximum contrast
+              borderColor = "#92400E" // Almost black amber border
               break
             case "cancelled":
-              backgroundColor = "#EF4444" // Red for cancelled appointments
+              backgroundColor = "#B91C1C" // Very dark red for maximum contrast
+              borderColor = "#7F1D1D" // Almost black red border
               break
             case "completed":
-              backgroundColor = "#3B82F6" // Blue for completed appointments
+              backgroundColor = "#1E40AF" // Very dark blue for maximum contrast
+              borderColor = "#1E3A8A" // Almost black blue border
               break
             case "approved":
-              backgroundColor = "#FF69B4" // Pink for approved appointments
+              backgroundColor = "#7E22CE" // Very dark purple for maximum contrast
+              borderColor = "#6B21A8" // Almost black purple border
               break
           }
-          return { style: { backgroundColor, borderRadius: "8px", border: "none" } }
+          return { style: { backgroundColor, borderRadius: "8px", border: `2px solid ${borderColor}` } }
         }}
         toolbar={true}
       />

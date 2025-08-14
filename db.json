@@ -53,8 +53,8 @@
       "qualifications": "MD, FAAD",
       "experience": "12 years",
       "clinicAddress": "Skin Care Clinic, 456 Health Street, Los Angeles",
-      "rating": 4.9,
-      "reviewCount": 203,
+      "rating": 0,
+      "reviewCount": 0,
       "consultationFee": 120,
       "videoConsultationFee": 80,
       "availability": {
@@ -394,7 +394,7 @@
       "specialty": "Cardiology",
       "date": "2025-08-12",
       "time": "09:00",
-      "status": "pending",
+      "status": "approved",
       "consultationType": "video",
       "symptoms": "",
       "fee": 100,
@@ -413,6 +413,34 @@
       "symptoms": "",
       "fee": 75,
       "id": "1754973847010"
+    },
+    {
+      "doctorId": "1",
+      "patientId": "1",
+      "doctorName": "Dr. Robert Williams",
+      "patientName": "Emma Thompson",
+      "specialty": "Cardiology",
+      "date": "2025-08-16",
+      "time": "09:00",
+      "status": "confirmed",
+      "consultationType": "call",
+      "symptoms": "",
+      "fee": 75,
+      "id": "1755157314364"
+    },
+    {
+      "doctorId": "1",
+      "patientId": "1",
+      "doctorName": "Dr. Robert Williams",
+      "patientName": "Emma Thompson",
+      "specialty": "Cardiology",
+      "date": "2025-08-16",
+      "time": "10:00",
+      "status": "confirmed",
+      "consultationType": "video",
+      "symptoms": "",
+      "fee": 100,
+      "id": "1755157803812"
     }
   ],
   "prescriptions": [

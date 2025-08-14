@@ -148,7 +148,7 @@ export default function AuthPage() {
             <Card className="bg-gray-50 border-gray-200 shadow-2xl animate-fadeInUp animation-delay-200">
               <CardContent className="p-8">
                 {/* Role Toggle */}
-                <div className="flex items-center justify-center space-x-6 mb-8 p-4 bg-gray-100 rounded-2xl">
+                <div className="flex items-center justify-center space-x-6 mb-8 p-4 bg-gray-200 rounded-2xl border border-gray-300">
                   <div
                     className={`flex items-center space-x-2 transition-all duration-300 ${!isDoctor ? "text-blue-500 scale-110" : "text-gray-500"}`}
                   >
@@ -161,7 +161,7 @@ export default function AuthPage() {
                     id="role-switch"
                     checked={isDoctor}
                     onCheckedChange={setIsDoctor}
-                    className="data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-blue-500 border-2 border-gray-300"
+                    className="data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-blue-300 border-2 border-gray-300 h-7 w-14"
                   />
                   <div
                     className={`flex items-center space-x-2 transition-all duration-300 ${isDoctor ? "text-purple-500 scale-110" : "text-gray-500"}`}
@@ -425,7 +425,7 @@ export default function AuthPage() {
           <Card className="bg-gray-50 border-gray-200 shadow-2xl animate-fadeInUp animation-delay-200">
             <CardContent className="p-8">
               {/* Role Toggle */}
-              <div className="flex items-center justify-center space-x-6 mb-8 p-4 bg-gray-100 rounded-2xl">
+              <div className="flex items-center justify-center space-x-6 mb-8 p-4 bg-gray-200 rounded-2xl border border-gray-300">
                 <div
                   className={`flex items-center space-x-2 transition-all duration-300 ${!isDoctor ? "text-blue-500 scale-110" : "text-gray-500"}`}
                 >
@@ -438,7 +438,7 @@ export default function AuthPage() {
                   id="role-switch-mobile"
                   checked={isDoctor}
                   onCheckedChange={setIsDoctor}
-                  className="data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-blue-500 border-2 border-gray-300"
+                  className="data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-blue-300 border-2 border-gray-300 h-7 w-14"
                 />
                 <div
                   className={`flex items-center space-x-2 transition-all duration-300 ${isDoctor ? "text-purple-500 scale-110" : "text-gray-500"}`}
